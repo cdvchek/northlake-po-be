@@ -22,7 +22,7 @@ app.use(express.json());
 // Static directory
 app.use("/", routes);
 
-sequelize.sync({ force: false }).then(function() {
+sequelize.sync({ force: true }).then(function() {
     app.listen( port, function() {
         console.log("App is listening on port: " + port);
     });

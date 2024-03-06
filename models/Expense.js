@@ -9,9 +9,17 @@ Expense.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        credit_card_holder: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         vendor: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        address: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         amount: {
             type: DataTypes.DECIMAL(10,2),
@@ -19,10 +27,6 @@ Expense.init(
         },
         date_expense: {
             type: DataTypes.DATE,
-            allowNull: false,
-        },
-        image_name: {
-            type: DataTypes.STRING,
             allowNull: false,
         },
         approved: {

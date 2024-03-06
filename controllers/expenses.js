@@ -6,7 +6,7 @@ const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = re
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const crypto = require('crypto');
 const router = require('express').Router();
-const { Expense, ExpenseDefiner, User } = require("../models");
+const { Expense, ExpenseDefiner, User, RecieptPhoto } = require("../models");
 
 const bucketName = process.env.BUCKET_NAME;
 const bucketRegion = process.env.BUCKET_REGION;
@@ -23,11 +23,11 @@ const s3 = new S3Client({
 
 const randomImageName = () => crypto.randomBytes(32).toString('hex');
 
-router.post('/newexpense', tokenAuth, upload.single('image'), async (req, res) => {
+router.post('/newexpense', tokenAuth, upload.array('image'), async (req, res) => {
     try {
-        const imageName = randomImageName();
+        const { expenseType, credit_card_holder, vendor, address, amount, date_expense, number_of_expense_numbers } = req.body;
 
-        const { expenseType, vendor, amount, date_expense, number_of_expense_numbers } = req.body;
+        const creditCardHolder = credit_card_holder === 'self' ? `${req.user.first_name} ${req.user.last_name}` : credit_card_holder;
 
         let expenseDefinersCheck = true;
         for (let i = 0; i < number_of_expense_numbers.length; i++) {
@@ -44,10 +44,11 @@ router.post('/newexpense', tokenAuth, upload.single('image'), async (req, res) =
         if (expenseDefinersCheck) {
             const newExpense = await Expense.create({
                 expense_type: expenseType,
+                credit_card_holder: creditCardHolder,
                 vendor: vendor,
+                address: address,
                 amount: amount,
                 date_expense: date_expense,
-                image_name: imageName,
                 UserId: req.user.id,
             });
     
@@ -64,17 +65,32 @@ router.post('/newexpense', tokenAuth, upload.single('image'), async (req, res) =
                 });
             }
     
-            const buffer = await sharp(req.file.buffer).resize({ height: 1920, width: 1080, fit: 'outside'}).withMetadata().toBuffer();
-    
-            const params = {
-                Bucket: bucketName,
-                Key: imageName,
-                Body: buffer,
-                ContentType: req.file.mimetype,
+            let imageNames = []; // Array to store names of uploaded images
+
+            for (const file of req.files) {
+                const imageName = randomImageName(); // Generate a unique name for each image
+                const buffer = await sharp(file.buffer).resize({ height: 1920, width: 1080, fit: 'outside' }).withMetadata().toBuffer();
+
+                const params = {
+                    Bucket: bucketName,
+                    Key: imageName,
+                    Body: buffer,
+                    ContentType: file.mimetype,
+                }
+
+                const command = new PutObjectCommand(params);
+                await s3.send(command);
+
+                imageNames.push({ imageName, order: file.name }); // Add the name to the array
             }
-    
-            const command = new PutObjectCommand(params);
-            await s3.send(command);
+            
+            for(const imageName of imageNames) {
+                await RecieptPhoto.create({
+                    expenseId: newExpense.id,
+                    image_name: imageName.imageName,
+                    image_order: imageName.order
+                });
+            }
     
             res.json(newExpense);
         } else {
@@ -109,7 +125,7 @@ router.get('/allexpenses', tokenAuth, async (req, res) => {
 
 router.get('/allexpensesdata', tokenAuth, async (req, res) => {
     try {
-        const expenses = await Expense.findAll({ include: [User, ExpenseDefiner] });
+        const expenses = await Expense.findAll({ include: [User, ExpenseDefiner, RecieptPhoto] });
         res.json(expenses);
     } catch (err) {
         console.log(err);
@@ -121,9 +137,9 @@ router.get('/expense-:id', tokenAuth, async (req, res) => {
     try {
         let expense;
         if (req.user.isAdmin) {
-            expense = await Expense.findOne({ where: { id: req.params.id }, include: [ExpenseDefiner, User]});
+            expense = await Expense.findOne({ where: { id: req.params.id }, include: [ExpenseDefiner, User, RecieptPhoto]});
         } else {
-            expense = await Expense.findOne({ where: { id: req.params.id, UserId: req.user.id }, include: [ExpenseDefiner] });
+            expense = await Expense.findOne({ where: { id: req.params.id, UserId: req.user.id }, include: [ExpenseDefiner, RecieptPhoto] });
         }
 
         res.json(expense);
@@ -152,25 +168,29 @@ router.get('/image-:expenseId', tokenAuth, async (req, res) => {
     }
 });
 
-router.put('/image/:id', tokenAuth, upload.single('image'), async (req, res) => {
+router.put('/image/:id', tokenAuth, upload.array('image'), async (req, res) => {
     try {
         // Finding the old image name
-        const expense = await Expense.findOne({ where: { id: req.params.id }, include: [ExpenseDefiner] });
-        
-        // Deleting the old image
-        const params = {
-            Bucket: bucketName,
-            Key: expense.dataValues.image_name
+        const expense = await Expense.findOne({ where: { id: req.params.id }, include: [ExpenseDefiner, RecieptPhoto] });
+
+        // Deleting the old images
+        for (let i = 0; i < expense.dataValues.RecieptPhotos.length; i++) {
+            const recieptPhoto = expense.dataValues.RecieptPhotos[i].dataValues;
+            const params = {
+                Bucket: bucketName,
+                Key: recieptPhoto.image_name,
+            }
+            
+            const command = new DeleteObjectCommand(params);
+            await s3.send(command);
+
+            await RecieptPhoto.destroy({ where: { id: recieptPhoto.id }});
         }
 
-        const command = new DeleteObjectCommand(params);
-        await s3.send(command);
-
-        // Creating the new image name
-        const imageName = randomImageName();
-
         // Grabbing data
-        const { expenseType, vendor, amount, date, number_of_expense_numbers } = req.body;
+        const { expenseType, credit_card_holder, vendor, address, amount, date, number_of_expense_numbers } = req.body;
+
+        const creditCardHolder = credit_card_holder === 'self' ? `${req.user.first_name} ${req.user.last_name}` : credit_card_holder;
 
         // Checking the expense numbers are valid
         let expenseDefinersCheck = true;
@@ -190,10 +210,11 @@ router.put('/image/:id', tokenAuth, upload.single('image'), async (req, res) => 
             const response = await Expense.update(
                 {
                     expense_type: expenseType,
+                    credit_card_holder: creditCardHolder,
                     vendor,
+                    address,
                     amount,
                     date_expense: date,
-                    image_name: imageName,
                 },
                 {
                     where: {
@@ -203,8 +224,8 @@ router.put('/image/:id', tokenAuth, upload.single('image'), async (req, res) => 
             );
 
             // Deleting the old expense numbers
-            for (let i = 0; i < expense.expenseDefiners.length; i++) {
-                const expenseDefiner = expense.expenseDefiners[i].dataValues;
+            for (let i = 0; i < expense.dataValues.ExpenseDefiners.length; i++) {
+                const expenseDefiner = expense.dataValues.ExpenseDefiners[i].dataValues;
                 const expenseDefinerId = expenseDefiner.id;
 
                 await ExpenseDefiner.destroy({ where: { id: expenseDefinerId } });
@@ -224,18 +245,34 @@ router.put('/image/:id', tokenAuth, upload.single('image'), async (req, res) => 
                 });
             }
 
-            // Uploading the new photo
-            const buffer = await sharp(req.file.buffer).resize({ height: 1920, width: 1080, fit: 'outside'}).withMetadata().toBuffer();
-    
-            const params = {
-                Bucket: bucketName,
-                Key: imageName,
-                Body: buffer,
-                ContentType: req.file.mimetype,
+            let imageNames = [];
+
+            // Uploading the new photos
+            for (const file of req.files) {
+                const imageName = randomImageName(); // Generate a unique name for each image
+                const buffer = await sharp(file.buffer).resize({ height: 1920, width: 1080, fit: 'outside' }).withMetadata().toBuffer();
+
+                const params = {
+                    Bucket: bucketName,
+                    Key: imageName,
+                    Body: buffer,
+                    ContentType: file.mimetype,
+                }
+
+                const command = new PutObjectCommand(params);
+                await s3.send(command);
+
+                imageNames.push({ imageName, order: file.name }); // Add the name to the array
             }
-    
-            const command = new PutObjectCommand(params);
-            await s3.send(command);
+
+            // Creating the new images
+            for(const imageName of imageNames) {
+                await RecieptPhoto.create({
+                    expenseId: expense.dataValues.id,
+                    image_name: imageName.imageName,
+                    image_order: imageName.order,
+                });
+            }
 
             res.json(response);
         } else {
@@ -249,72 +286,76 @@ router.put('/image/:id', tokenAuth, upload.single('image'), async (req, res) => 
 });
 
 router.put("/:id", tokenAuth, async (req, res) => {
-try {
-    // Deleting the old expense numbers
-    const deleteexpenseDefiners = await ExpenseDefiner.findAll({ where: { ExpenseId: req.params.id } });
+    try {
+        // Deleting the old expense numbers
+        const deleteexpenseDefiners = await ExpenseDefiner.findAll({ where: { ExpenseId: req.params.id } });
 
-    for (let i = 0; i < deleteexpenseDefiners.length; i++) {
-        const expenseDefiner = deleteexpenseDefiners[i];
-        const expenseDefinerId = expenseDefiner.id;
+        for (let i = 0; i < deleteexpenseDefiners.length; i++) {
+            const expenseDefiner = deleteexpenseDefiners[i];
+            const expenseDefinerId = expenseDefiner.id;
 
-        await ExpenseDefiner.destroy({ where: { id: expenseDefinerId } });
-    }
-
-    // Grabbing data
-    console.log(req.body);
-    const { expenseType, vendor, amount, expenseNumbers, date } = req.body;
-    const expenseDefiners = expenseNumbers;
-
-    // Checking expense numbers are valid
-    let expenseDefinersCheck = true;
-    for (let i = 0; i < expenseDefiners.length; i++) {
-        const expenseDefiner = expenseDefiners[i][0];
-        const expenseDefinerAmount = expenseDefiners[i][1];
-        const businessPurpose = expenseDefiners[i][2];
-
-        if (!(expenseDefiner && expenseDefinerAmount && businessPurpose)) {
-            expenseDefinersCheck = false;
-            break;
+            await ExpenseDefiner.destroy({ where: { id: expenseDefinerId } });
         }
-    }
-    if (expenseDefinersCheck) {
-        // Updating the expense
-        const response = await Expense.update(
-            {
-                expense_type: expenseType,
-                vendor,
-                amount,
-                date_expense: date,
-            },
-            {
-                where: {
-                    id: req.params.id,
-                }
-            }
-        );
 
-        // Creating new expense numbers
+        // Grabbing data
+        const { expenseType, credit_card_holder, vendor, address, amount, expenseNumbers, date } = req.body;
+
+        const creditCardHolder = credit_card_holder === 'self' ? `${req.user.first_name} ${req.user.last_name}` : credit_card_holder;
+
+        const expenseDefiners = expenseNumbers;
+
+        // Checking expense numbers are valid
+        let expenseDefinersCheck = true;
         for (let i = 0; i < expenseDefiners.length; i++) {
             const expenseDefiner = expenseDefiners[i][0];
             const expenseDefinerAmount = expenseDefiners[i][1];
             const businessPurpose = expenseDefiners[i][2];
 
-            await ExpenseDefiner.create({
-                ExpenseId: req.params.id,
-                expense_number: expenseDefiner,
-                amount: expenseDefinerAmount,
-                business_purpose: businessPurpose,
-            });
+            if (!(expenseDefiner && expenseDefinerAmount && businessPurpose)) {
+                expenseDefinersCheck = false;
+                break;
+            }
         }
-        res.json(response);
-    } else {
-        console.log("PUT: './:id' - Expense Numbers Check does not pass.");
+        if (expenseDefinersCheck) {
+            // Updating the expense
+            const response = await Expense.update(
+                {
+                    expense_type: expenseType,
+                    credit_card_holder: creditCardHolder,
+                    vendor,
+                    address,
+                    amount,
+                    date_expense: date,
+                },
+                {
+                    where: {
+                        id: req.params.id,
+                    }
+                }
+            );
+
+            // Creating new expense numbers
+            for (let i = 0; i < expenseDefiners.length; i++) {
+                const expenseDefiner = expenseDefiners[i][0];
+                const expenseDefinerAmount = expenseDefiners[i][1];
+                const businessPurpose = expenseDefiners[i][2];
+
+                await ExpenseDefiner.create({
+                    ExpenseId: req.params.id,
+                    expense_number: expenseDefiner,
+                    amount: expenseDefinerAmount,
+                    business_purpose: businessPurpose,
+                });
+            }
+            res.json(response);
+        } else {
+            console.log("PUT: './:id' - Expense Numbers Check does not pass.");
+            res.sendStatus(500);
+        }
+    } catch (err) {
+        console.log(err);
         res.sendStatus(500);
     }
-} catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-}
 });
 
 
