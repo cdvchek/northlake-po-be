@@ -1,0 +1,200 @@
+/* Body wrapper */
+
+body {
+    background-color: #ededed;
+    margin: 0;
+    width: 100vw;
+}
+
+/* Content Wrapper */
+
+#content {
+    margin: 0 auto;
+    max-width: 1000px;
+}
+
+/* Title */
+
+#title-space {
+    position: relative;
+    height: 10%;
+    width: 100%;
+}
+
+#title-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    height: 100%;
+}
+
+#title {
+    margin-bottom: 15px;
+    color: #354570;
+}
+
+/* Expense List */
+
+#users-list-space {
+    position: relative;
+    height: 82%;
+    width: 100%;
+    overflow: scroll;
+}
+
+#users-list {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Expense numbers */
+
+.user {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: calc(90% - 20px);
+    height: 40px;
+    border-radius: 10px 30px 30px 10px;
+    background-color: #1667b8;
+    box-shadow: -2px 3px 5px 1px grey;
+    margin-bottom: 16px;
+    padding: 0 10px;
+}
+
+.big-identifier {
+    width: 43%;
+}
+
+.small-identifier {
+    width: 10%;
+}
+
+.user-identifier {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.user-identifier-text {
+    color: white;
+    text-align: center;
+}
+
+/* Add Button */
+
+#edit-user-btn {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 24px;
+    right: 24px;
+    font-size: 40px;
+    color: #354570;
+    border: none;
+}
+
+#edit-user-div-background {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    background-color: rgba(99, 99, 99, 0.5);
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 100vw;
+    z-index: 5;
+}
+
+#edit-user-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: white;
+    height: 250px;
+    min-width: 85vw;
+    width: 350px;
+    border-radius: 20px;
+}
+
+#edit-user-inputs {
+    width: 100%;
+    height: 48%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#edit-user-inputs-top {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.fake-btn {
+    border: 1px solid grey !important;
+    padding-left: 10px;
+}
+
+#edit-user-user {
+    /* margin-top: 20px; */
+    border: 1.5px solid grey;
+}
+
+#edit-user-btns {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.edit-user-btns-top {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.edit-user-btn {
+    height: 35px;
+    min-width: 40%;
+    margin: 10px 10px;
+    border: none;
+    border-radius: 10px;
+}
+
+#edit-user-cancel {
+    background-color: rgb(202, 106, 106);
+}
+
+#edit-user-save-another {
+    background-color: rgb(103, 155, 203);
+}
+
+#edit-user-save {
+    width: calc(80% + 20px);
+    background-color: rgb(119, 189, 119);
+}
+
+#delete-btn {
+    width: 90%;
+    max-width: 387px;
+    height: 60px;
+    font-size: 22px;
+    margin: 50px 0;
+    border: none;
+    color: red;
+    background-color: rgb(243, 243, 243);
+    border-radius: 30px;
+    box-shadow: -2px 3px 5px 1px grey;
+    position: absolute;
+    bottom: 28px;
+}

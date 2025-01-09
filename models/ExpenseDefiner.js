@@ -5,10 +5,6 @@ class ExpenseDefiner extends Model {}
 
 ExpenseDefiner.init(
     {
-        expense_number: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
         business_purpose: {
             type: DataTypes.TEXT,
             allowNull: false,

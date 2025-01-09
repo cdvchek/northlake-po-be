@@ -1,0 +1,166 @@
+/* Body wrapper */
+
+body {
+    background-color: #ededed;
+    margin: 0;
+    width: 100vw;
+}
+
+/* Content Wrapper */
+
+#content {
+    position: relative;
+    margin: 0 auto;
+    max-width: 1000px;
+    padding: 0 10px;
+    overflow-y: scroll;
+}
+
+/* Buttons */
+
+#buttons-space {
+    position: relative;
+    height: 6%;
+    width: 100%;
+}
+
+#back-btn {
+    left: 12px
+}
+
+#edit-btn {
+    right: 12px;
+}
+
+#save-btn {
+    right: 64px;
+}
+
+.top-btn {
+    top: 24px;
+    position: absolute;
+    border: none;
+    background: none;
+    font-size: 32px;
+    color: black;
+}
+
+/* Expense */
+
+#expense-space {
+    position: relative;
+    height: 86%;
+    width: 100%;
+    overflow: scroll;
+}
+
+.expense-section-title-space {
+    height: 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.expense-section-title {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#expense-details {
+    display: flex;
+    flex-direction: row;
+}
+
+.expense-detail-column {
+    width: 49%;
+    padding-left: 20px;
+}
+
+.expense-detail {
+    margin-bottom: 16px;
+}
+
+.expense-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.expense-text {
+    font-size: 22px;
+    margin: 4px 4px;
+}
+
+.budget-split-detail {
+    width: calc(100% - 20px);
+}
+
+.budget-split-detail {
+    display: flex;
+    justify-content: center;
+}
+
+.budget-split-detail > p {
+    margin: 12px 0;
+    font-size: 20px;
+}
+
+.bsd-1 {
+    width: 15%;
+}
+
+.bsd-2 {
+    width: calc(70% - 4px);
+    /* padding: 0 2px; */
+}
+
+.bsd-3 {
+    width: 15%;
+}
+
+#expense-total {
+    display: flex;
+    width: calc(100% - 20px);
+    height: 60px;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+
+#receipt-photos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.photo-div {
+    height: 140px;
+    margin: 10px;
+}
+
+.photo {
+    border-radius: 20px;
+}
+
+/* Delete Btn */
+
+#delete-btn-div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#delete-btn {
+    width: 90%;
+    height: 60px;
+    font-size: 22px;
+    margin: 50px 0;
+    border: none;
+    color: red;
+    background-color: rgb(243, 243, 243);
+    border-radius: 30px;
+    box-shadow: -2px 3px 5px 1px grey;
+}

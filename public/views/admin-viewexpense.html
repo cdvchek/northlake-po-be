@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseNote - Admin</title>
+    <link rel="stylesheet" type="text/css" href="../css/adjustheight.css">
+    <link rel="stylesheet" type="text/css" href="../css/receiptphotofullscreen.css">
+    <link rel="stylesheet" type="text/css" href="../css/admin-viewexpense.css">
+    <link rel="stylesheet" type="text/css" href="../css/navbar.css">
+</head>
+<body>
+    <div id="content">
+        <div id="buttons-space">
+            <button id="back-btn" class="top-btn">
+                <ion-icon id="back-btn-icon" name="arrow-back-circle-outline"></ion-icon>
+            </button>
+            <button id="save-btn" class="top-btn">
+                <ion-icon id="save-btn-icon" name="cloud-download-outline"></ion-icon>
+            </button>
+            <button id="edit-btn" class="top-btn">
+                <ion-icon id="edit-btn-icon" name="build-outline"></ion-icon>
+            </button>
+        </div>
+        <div id="expense-space">
+            <div class="expense-section-title-space">
+                <h1 class="expense-section-title">Expense Details</h1>
+            </div>
+            <div id="expense-details">
+                <div id="expense-details-left" class="expense-detail-column">
+                    <div class="expense-detail">
+                        <p id="entry-number-title" class="expense-title">Entry:</p>
+                        <p id="entry-number" class="expense-text"></p>
+                    </div>
+                    <div class="expense-detail">
+                        <p id="submitter-title" class="expense-title">Submitter:</p>
+                        <p id="submitter" class="expense-text"></p>
+                    </div>
+                    <div class="expense-detail">
+                        <p id="vendor-payee-title" class="expense-title"></p>
+                        <p id="vendor-payee" class="expense-text"></p>
+                    </div>
+                </div>
+                <div id="expense-details-right" class="expense-detail-column">
+                    <div class="expense-detail">
+                        <p id="purchase-date-title" class="expense-title">Date:</p>
+                        <p id="purchase-date" class="expense-text"></p>
+                    </div>
+                    <div class="expense-detail">
+                        <p id="payment-type-title" class="expense-title">Payment:</p>
+                        <p id="payment-type" class="expense-text"></p>
+                    </div>
+                    <div id="address-ccholder-div" class="expense-detail">
+                        <p id="address-ccholder-title" class="expense-title"></p>
+                        <p id="address-ccholder" class="expense-text"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="expense-section-title-space">
+                <h1 class="expense-section-title">Budget Splits</h1>
+            </div>
+            <div id="budget-splits-details">
+                <div id="budget-splits-details-header" class="budget-split-detail">
+                    <p class="bsd-1">Line #</p>
+                    <p class="bsd-2">Description</p>
+                    <p class="bsd-3">Subprice</p>
+                </div>
+            </div>
+            <div id="expense-total">
+                <p id="purchase-total-title" class="expense-title">Total Price:</p>
+                <p id="purchase-total" class="expense-text"></p>
+            </div>
+            <div id="receipt-photos"></div>
+            <div id="photo-fullscreen-div" style="display: none;">
+                <button id="close-fullscreen">X</button>
+                <img id="photo-fullscreen"  alt="fullscreen of selected photo">
+            </div>
+            <div id="delete-btn-div">
+                <button id="delete-btn">Delete</button>
+            </div>
+        </div>
+        <div id="navbar-space">
+            <nav id="navbar">
+                <div id="navbar-content">
+                    <div id="expenses-btn-wrapper" class="navbar-adminsubspace">
+                        <button id="expenses-btn" class="navbar-btn">
+                            <ion-icon class="navbar-icon" name="file-tray-full"></ion-icon>
+                        </button>
+                    </div>
+                    <div id="expensenumbers-btn-wrapper" class="navbar-adminsubspace">
+                        <button id="expensenumbers-btn" class="navbar-btn">
+                            <ion-icon class="navbar-icon" name="pricetags"></ion-icon>
+                        </button>
+                    </div>
+                    <div id="countdown-wrapper" class="navbar-subspace">
+                        <div id="countdown">
+                            <p id="countdown-text"></p>
+                        </div>
+                    </div>
+                    <div id="users-btn-wrapper" class="navbar-adminsubspace">
+                        <button id="users-btn" class="navbar-btn">
+                            <ion-icon class="navbar-icon" name="people"></ion-icon>
+                        </button>
+                    </div>
+                    <div id="backtouser-btn-wrapper" class="navbar-adminsubspace">
+                        <button id="backtouser-btn" class="navbar-btn">
+                            <ion-icon class="navbar-icon" name="arrow-forward-outline"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- TODO:
+            Needs a save button
+        -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="../js/adjustview.js"></script>
+        <script src="../js/receiptphotofullscreen.js"></script>
+        <script src="../js/a_viewexpense-backbutton.js"></script>
+        <script src="../js/a_viewexpense-editbutton.js"></script>
+        <script src="../js/a_viewexpense-deletebutton.js"></script>
+        <script src="../js/a_viewexpense-fetchexpensenumber.js"></script>
+        <script src="../js/a_viewexpense-saveexpense.js"></script>
+        <script src="../js/navbar-countdown.js"></script>
+        <script src="../js/navbar-navigation.js"></script>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    </div>
+</body>
+</html>

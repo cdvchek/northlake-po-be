@@ -9,10 +9,6 @@ RecieptPhoto.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        image_order: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        }
     },
     {
         sequelize,

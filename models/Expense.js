@@ -29,7 +29,7 @@ Expense.init(
             type: DataTypes.DATE,
             allowNull: false,
         },
-        approved: {
+        processed: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
             allowNull: false,

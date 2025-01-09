@@ -1,5 +1,4 @@
 const User = require('./User');
-const RefreshToken = require('./RefreshToken');
 const Expense = require('./Expense');
 const ExpenseDefiner = require('./ExpenseDefiner');
 const ExpenseNumber = require('./ExpenseNumber');
@@ -11,6 +10,8 @@ Expense.belongsTo(User);
 Expense.hasMany(ExpenseDefiner);
 ExpenseDefiner.belongsTo(Expense);
 
+ExpenseDefiner.belongsTo(ExpenseNumber);
+
 Expense.hasMany(RecieptPhoto);
 RecieptPhoto.belongsTo(Expense);
 
@@ -21,4 +22,4 @@ ExpenseNumber.belongsTo(User, {
     }
 });
 
-module.exports = { User, RefreshToken, Expense, ExpenseDefiner, ExpenseNumber, RecieptPhoto };
+module.exports = { User, Expense, ExpenseDefiner, ExpenseNumber, RecieptPhoto };

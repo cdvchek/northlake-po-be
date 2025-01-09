@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseNote - Admin</title>
+    <link rel="stylesheet" type="text/css" href="../css/adjustheight.css">
+    <link rel="stylesheet" type="text/css" href="../css/admin-users.css">
+    <link rel="stylesheet" type="text/css" href="../css/navbar.css">
+</head>
+<body>
+    <div id="edit-user-div-background">
+        <div id="edit-user-div">
+            <div id="edit-user-inputs">
+                <div class="edit-user-btns-top">
+                    <input id="edit-user-number" class="edit-user-btn fake-btn" type="text" placeholder="Number">
+                    <input id="edit-user-description" class="edit-user-btn fake-btn" type="text" placeholder="Description">
+                </div>
+                <select id="edit-user-user"></select>
+            </div>
+            <div id="edit-user-btns">
+                <div class="edit-user-btns-top">
+                    <button id="edit-user-cancel" class="edit-user-btn cancel">Cancel</button>
+                    <button id="edit-user-save-another" class="edit-user-btn save-another">Save/Add Another</button>
+                </div>
+                <button id="edit-user-save" class="edit-user-btn save">Save</button>
+            </div>
+        </div>
+        <button id="delete-btn">Delete</button>
+    </div>
+    <div id="content">
+        <div id="title-space">
+            <div id="title-wrapper">
+                <h1 id="title">Employees</h1>
+            </div>
+        </div>
+        <div id="users-list-space">
+            <ul id="users-list"></ul>
+        </div>
+        <div id="navbar-space">
+            <nav id="navbar">
+                <div id="navbar-content">
+                    <div id="expenses-btn-wrapper" class="navbar-adminsubspace">
+                        <button id="expenses-btn" class="navbar-btn">
+                            <ion-icon class="navbar-icon" name="file-tray-full"></ion-icon>
+                        </button>
+                    </div>
+                    <div id="expensenumbers-btn-wrapper" class="navbar-adminsubspace">
+                        <button id="expensenumbers-btn" class="navbar-btn">
+                            <ion-icon class="navbar-icon" name="pricetags"></ion-icon>
+                        </button>
+                    </div>
+                    <div id="countdown-wrapper" class="navbar-subspace">
+                        <div id="countdown">
+                            <p id="countdown-text"></p>
+                        </div>
+                    </div>
+                    <div id="users-btn-wrapper" class="navbar-adminsubspace">
+                        <button id="users-btn" class="navbar-btn">
+                            <ion-icon class="navbar-icon" name="people"></ion-icon>
+                        </button>
+                    </div>
+                    <div id="backtouser-btn-wrapper" class="navbar-adminsubspace">
+                        <button id="backtouser-btn" class="navbar-btn">
+                            <ion-icon class="navbar-icon" name="arrow-forward-outline"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <script src="../js/adjustview.js"></script>
+        <script src="../js/navbar-countdown.js"></script>
+        <script src="../js/navbar-navigation.js"></script>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

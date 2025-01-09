@@ -1,0 +1,109 @@
+/* Body wrapper */
+
+body {
+    background-color: #ededed;
+    margin: 0;
+    width: 100vw;
+}
+
+/* Content Wrapper */
+
+#content {
+    margin: 0 auto;
+    max-width: 1000px;
+}
+
+/* Title */
+
+#title-space {
+    position: relative;
+    height: 10%;
+    width: 100%;
+}
+
+#title-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    height: 100%;
+}
+
+#title {
+    margin-bottom: 15px;
+    color: #354570;
+}
+
+/* Expense List */
+
+#expenses-list-space {
+    position: relative;
+    height: 82%;
+    width: 100%;
+    overflow: scroll;
+}
+
+#expenses-list {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Expenses */
+
+.expense {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: calc(90% - 20px);
+    height: 60px;
+    border-radius: 10px 30px 30px 10px;
+    background-color: #1667b8;
+    box-shadow: -2px 3px 5px 1px grey;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.expense-identifier {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 33%;
+    height: 100%;
+}
+
+.expense-identifier-text {
+    color: white;
+    text-align: center;
+}
+
+.shadow-id-tag {
+    box-shadow: -2px 3px 5px 1px grey;
+    z-index: -2;
+    position: absolute;
+    bottom: -14px;
+    height: 32px;
+    width: 50px;
+    border-radius: 16px;
+}
+
+.id-tag-div {
+    position: absolute;
+    bottom: -14px;
+    border: 3px solid #354570;
+    background-color: white;
+    height: 26px;
+    width: 50px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.id-tag-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: #354570;
+}

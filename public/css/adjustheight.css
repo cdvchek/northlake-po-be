@@ -1,0 +1,3 @@
+#content {
+    height: calc(var(--vh, 1vh) * 100); /* Fallbacks to 100vh if --vh isn't set */
+}

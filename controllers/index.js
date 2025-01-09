@@ -13,4 +13,7 @@ router.use("/expenses", expenseRoutes);
 const expenseNumberRoutes = require("./expenseNumbers");
 router.use("/expensenumbers", expenseNumberRoutes);
 
+const testRoutes = require("./web");
+router.use("/web", testRoutes);
+
 module.exports = router;

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseNote - Profile</title>
+    <link rel="stylesheet" type="text/css" href="../css/adjustheight.css">
+    <link rel="stylesheet" type="text/css" href="../css/profile.css">
+    <link rel="stylesheet" type="text/css" href="../css/navbar.css">
+</head>
+<body>
+    <div id="content">
+        <div id="info-space">
+            <div id="info-wrapper">
+                <div id="name-wrapper" class="info-text-wrapper">
+                    <span id="name-text"></span>
+                </div>
+                <div id="email-wrapper" class="info-text-wrapper">
+                    <span id="email-text"></span>
+                </div>
+            </div>
+        </div>
+        <div id="admin-btn-space"></div>
+        <div id="logout-btn-space">
+            <div id="logout-btn-wrapper">
+                <button id="logout-btn">Logout</button>
+            </div>
+        </div>
+        <div id="navbar-space">
+            <nav id="navbar">
+                <div id="navbar-content">
+                    <div id="myexpenses-btn-wrapper" class="navbar-subspace">
+                        <button id="myexpenses-btn" class="navbar-btn">
+                            <ion-icon class="navbar-icon" name="file-tray-full"></ion-icon>
+                        </button>
+                    </div>
+                    <div id="countdown-wrapper" class="navbar-subspace">
+                        <div id="countdown">
+                            <p id="countdown-text"></p>
+                        </div>
+                    </div>
+                    <div id="profile-btn-wrapper" class="navbar-subspace">
+                        <button id="profile-btn" class="navbar-btn">
+                            <ion-icon class="navbar-icon" name="person"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <script src="../js/adjustview.js"></script>
+        <script src="../js/navbar-countdown.js"></script>
+        <script src="../js/navbar-navigation.js"></script>
+        <script src="../js/profile-adminbutton.js"></script>
+        <script src="../js/profile-fetchInfo.js"></script>
+        <script src="../js/profile-logout.js"></script>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    </div>
+</body>
+</html>

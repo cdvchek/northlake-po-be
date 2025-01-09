@@ -108,6 +108,26 @@ router.get('/all-email', tokenAuth, async (req, res) => {
     }
 });
 
+router.get('/admincheck', tokenAuth, async (req, res) => {
+    try {
+        const user = await User.findByPk(req.session.user.id);
+        res.json({isAdmin: user.dataValues.isAdmin});
+    } catch (error) {
+        res.sendStatus(500);
+        console.error(error);
+    }
+});
+
+router.get('/myinfo', tokenAuth, async (req, res) => {
+    try {
+        const user = await User.findByPk(req.session.user.id);
+        res.json({ email: user.dataValues.email, name: `${user.dataValues.first_name} ${user.dataValues.last_name}` });
+    } catch (err) {
+        res.sendStatus(500);
+        console.log(err);
+    }
+});
+
 router.put('/id/:id', tokenAuth, async (req, res) => {
     try {
         const update = await User.update(req.body.update, { where: { id: req.params.id }, individualHooks: true });
@@ -126,6 +146,6 @@ router.delete('/:id', tokenAuth, async (req, res) => {
         res.sendStatus(500);
         console.error(error);
     }
-})
+});
 
 module.exports = router;

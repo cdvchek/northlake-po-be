@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseNote - Form</title>
+    <link rel="stylesheet" type="text/css" href="../css/adjustheight.css">
+    <link rel="stylesheet" type="text/css" href="../css/expenseform.css">
+    <link rel="stylesheet" type="text/css" href="../css/receiptphotofullscreen.css">
+</head>
+<body>
+    <div id="content">
+        <div id="back-btn-wrapper">
+            <button id="go-back-btn">
+                <ion-icon id="back-btn-icon" name="arrow-back-circle-outline"></ion-icon>
+            </button>
+        </div>
+        <div id="title-space">
+            <div id="title-wrapper">
+                <h1 id="title">Expense Form</h1>
+            </div>
+        </div>
+        <div id="simple-input-space">
+            <div class="simple-input-wrapper">
+                <div class="simple-input-div">
+                    <div class="simple-input-title-wrapper">
+                        <span class="simple-input-title">Payment</span>
+                    </div>
+                    <select id="payment-select" class="simple-input" name="payment" id="payment-select">
+                        <option value="church-credit-card">Church Credit Card</option>
+                        <option value="reimbursement">Reimbursement</option>
+                        <option value="invoice">Invoice</option>
+                    </select>
+                </div>
+            </div>
+            <div id="not-my-card-checkbox-wrapper">
+                <input id="not-my-card-checkbox" type="checkbox"><span id="not-my-card-text">Not My Card.</span>
+            </div>
+            <div id="cc-name-wrapper" class="simple-input-wrapper">
+                <div class="simple-input-div">
+                    <div class="simple-input-title-wrapper">
+                        <span class="simple-input-title">CC Name</span>
+                    </div>
+                    <input id="credit-card-holder-input" class="simple-input" type="text">
+                </div>
+            </div>
+            <div class="simple-input-wrapper">
+                <div class="simple-input-div">
+                    <div class="simple-input-title-wrapper">
+                        <span id="vendor-text" class="simple-input-title">Vendor</span>
+                    </div>
+                    <input id="vendor-input" class="simple-input" type="text">
+                </div>
+            </div>
+            <div id="address-wrapper" class="simple-input-wrapper">
+                <div class="simple-input-div">
+                    <div class="simple-input-title-wrapper">
+                        <span class="simple-input-title">Address</span>
+                    </div>
+                    <input id="address-input" class="simple-input" type="text">
+                </div>
+            </div>
+            <div class="simple-input-wrapper">
+                <div class="simple-input-div">
+                    <div class="simple-input-title-wrapper">
+                        <span class="simple-input-title">Amount</span>
+                    </div>
+                    <input id="amount-input" class="simple-input" type="number" step=".01">
+                </div>
+            </div>
+            <div class="simple-input-wrapper">
+                <div class="simple-input-div">
+                    <div class="simple-input-title-wrapper">
+                        <span class="simple-input-title">Buy Date</span>
+                    </div>
+                    <input id="expense-date-input" class="simple-input" type="date">
+                </div>
+            </div>
+        </div>
+        <div id="expense-definers-space">
+            <div id="expense-numbers-holder"></div>
+            <ul id="expense-definers-list">
+                <li id="expense-definers-1" class="expense-definer">
+                    <div class="expense-definer-subwrapper">
+                        <span class="expense-definer-text">Expense Number</span>
+                        <select class="expense-definer-select" name="expense-number-1" id="expense-number-1">
+                        </select>
+                    </div>
+                    <div class="expense-definer-subwrapper">
+                        <span class="expense-definer-text">Business Purpose</span>
+                        <textarea class="expense-definer-textarea" id="business-purpose-1"></textarea>
+                    </div>
+                    <div class="expense-definer-subwrapper expense-definer-subamount">
+                        <span class="expense-definer-text">Sub Amount</span>
+                        <input class="expense-definer-input" type="number" step=".01">
+                    </div>
+                    <button class="expense-definer-remove-btn">X</button>
+                </li>
+            </ul>
+            <div id="expense-definers-add-btn-wrapper">
+                <button id="expense-definers-add-btn">
+                    <ion-icon id="expense-definers-add-icon" name="add-circle-outline"></ion-icon>
+                </button>
+            </div>
+            <div id="removed-expense-definers" style="display: none;"></div>
+        </div>
+        <div id="receipt-photos-space">
+            <div id="receipt-photos-btns">
+                <span id="receipt-photos-text">Receipt Photo(s)</span>
+                <button class="receipt-photos-btn" id="new-photo-btn">
+                    <ion-icon class="receipt-photos-icon" name="camera"></ion-icon>
+                </button>
+                <input type="file" accept="image/*" capture="environment" id="camera-input" class="camera-input">
+                <button class="receipt-photos-btn" id="choose-photo-btn">
+                    <ion-icon class="receipt-photos-icon" name="images"></ion-icon>
+                </button>
+                <input type="file" accept="image/*" id="photo-input" class="camera-input">
+            </div>
+            <div id="photo-viewer"></div>
+            <div id="removed-photos" style="display: none;"></div>
+        </div>
+        <div id="submit-expense-btn-space">
+            <div id="submit-expense-btn-wrapper">
+                <button id="submit-expense-btn">Submit Expense</button>
+            </div>
+        </div>
+        <div id="photo-fullscreen-div" style="display: none;">
+            <button id="close-fullscreen">X</button>
+            <img id="photo-fullscreen"  alt="fullscreen of selected photo">
+        </div>
+        <script src="../js/adjustview.js"></script>
+        <script src="../js/receiptphotofullscreen.js"></script>
+        <script src="../js/expenseform-filloutform.js"></script>
+        <script src="../js/expenseform-fetchmyexpensenumbers.js"></script>
+        <script src="../js/expenseform-backbutton.js"></script>
+        <script src="../js/expenseform-simpleinputcontroller.js"></script>
+        <script src="../js/expenseform-submitexpense.js"></script>
+        <script src="../js/expenseform-expensedefinerscontroller.js"></script>
+        <script src="../js/expenseform-imagecontroller.js"></script>
+        <script src="../js/expenseform-imagebuttons.js"></script>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    </div>
+</body>
+</html>

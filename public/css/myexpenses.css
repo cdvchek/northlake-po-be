@@ -1,0 +1,107 @@
+/* Body wrapper */
+
+body {
+    background-color: #ededed;
+    margin: 0;
+    width: 100%;
+}
+
+/* Content Wrapper */
+
+#content {
+    margin: 0 auto;
+    max-width: 1000px;
+}
+
+/* Title */
+
+#title-space {
+    position: relative;
+    height: 10%;
+    width: 100%;
+}
+
+#title-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    height: 100%;
+}
+
+#title {
+    margin-bottom: 15px;
+    color: #354570;
+}
+
+/* Expense List */
+
+#expenses-list-space {
+    position: relative;
+    height: 72%;
+    width: 100%;
+    overflow: scroll;
+}
+
+#expenses-list {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Expenses */
+
+.expense {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: calc(90% - 20px);
+    height: 60px;
+    border-radius: 10px 30px 30px 10px;
+    background-color: #1667b8;
+    box-shadow: -2px 3px 5px 1px grey;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.expense-identifier {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 33%;
+    height: 100%;
+}
+
+.expense-identifier-text {
+    color: white;
+    text-align: center;
+}
+
+/* Submit Expense Button */
+
+#submit-expense-btn-space {
+    position: relative;
+    height: 10%;
+    width: 100%;
+}
+
+#submit-expense-btn-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+#submit-expense-btn {
+    width: 50%;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    background-color: #1667b8;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    box-shadow: -2px 3px 5px 1px grey;
+}

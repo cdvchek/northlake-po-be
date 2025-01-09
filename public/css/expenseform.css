@@ -1,0 +1,362 @@
+/* Body Wrapper */
+
+body {
+    position: relative;
+    width: 100vw;
+    margin: 0;
+    background-color: #ededed;
+    overflow-y: scroll;
+}
+
+/* Back Button */
+
+#back-btn-wrapper {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    z-index: 10;
+}
+
+#go-back-btn {
+    background-color: none;
+    border: none;
+}
+
+#back-btn-icon {
+    font-size: 32px;
+    color: #354570;
+}
+
+/* Title */
+
+#title-space {
+    position: relative;
+    width: 100%;
+    height: 10vh;
+}
+
+#title-wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+#title {
+    color: #354570;
+}
+
+/* Simple Inputs */
+
+#simple-input-space {
+    position: relative;
+}
+
+.simple-input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+}
+
+.simple-input-div {
+    height: 75%;
+    width: 90%;
+    display: flex;
+    background-color: white;
+    border-radius: 18.75px;
+    box-shadow: -2px 3px 5px 1px grey;
+}
+
+.simple-input-title-wrapper {
+    background-color: #1667b8;
+    border-radius: 18.75px;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.simple-input-title {
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.simple-input {
+    border: none;
+    border-radius: 18.75px;
+    background-color: white;
+    flex: 1;
+    text-align: end;
+    padding: 0 20px;
+    font-size: 18px;
+}
+
+/* Default Showing Inputs (Credit Card) */
+
+#cc-name-wrapper {
+    display: none;
+}
+
+#address-wrapper {
+    display: none;
+}
+
+/* Not My Credit Card Checkbox */
+
+#not-my-card-checkbox-wrapper {
+    width: 90%;
+    margin: 10px auto;
+}
+
+#not-my-card-checkbox {
+    transform: scale(1.5);
+    margin-left: 8px;
+    margin-right: 15px;
+}
+
+#not-my-card-text {
+    font-size: 18px;
+}
+
+/* Expense Definers */
+
+#expense-numbers-holder {
+    display: none;
+}
+
+#expense-definers-space {
+    width: 100%;
+    position: relative;
+}
+
+#expense-definers-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.expense-definer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #1667b8;
+    list-style-type: none;
+    width: 90%;
+    padding: 20px 0;
+    border-radius: 20px;
+    box-shadow: -2px 3px 5px 1px grey;
+    margin: 10px 0;
+}
+
+.expense-definer:last-child {
+    margin-bottom: 0;
+}
+
+.expense-definer-subwrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.expense-definer-text {
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-shadow: -2px 3px 5px rgb(48, 57, 70);
+}
+
+.expense-definer-select {
+    border: none;
+    width: 90%;
+    height: 37.5px;
+    border-radius: 18.75px;
+    text-align: center;
+    margin-bottom: 25px;
+    box-shadow: -2px 3px 5px 1px rgb(48, 57, 70);
+    font-size: 18px;
+}
+
+.expense-definer-textarea {
+    width: calc(90% - 24px);
+    min-height: 70px;
+    border-radius: 18.75px;
+    box-shadow: -2px 3px 5px 1px rgb(48, 57, 70);
+    padding: 12px;
+    font-size: 18px;
+}
+
+.expense-definer-subamount {
+    margin-top: 25px;
+}
+
+.expense-definer-input {
+    width: 90%;
+    height: 37.5px;
+    text-align: center;
+    border: none;
+    background-color: white;
+    border-radius: 18.75px;
+    font-size: 18px;
+    box-shadow: -2px 3px 5px 1px rgb(48, 57, 70);
+}
+
+.expense-definer-remove-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    height: 35px;
+    width: 35px;
+    border-radius: 17.5px;
+    background-color: red;
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#expense-definers-add-btn-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    margin-bottom: 12px;
+}
+
+#expense-definers-add-btn {
+    background-color: none;
+    border: none;
+    flex: 1;
+}
+
+#expense-definers-add-icon {
+    font-size: 32px;
+    color: #354570;
+}
+
+/* Receipt Photo */
+
+#receipt-photos-space {
+    position: relative;
+    width: 100%;
+}
+
+#receipt-photos-btns {
+    display: flex;
+    margin: 0 auto;
+    width: 90%;
+    align-items: center;
+    height: 50px;
+}
+
+#receipt-photos-text {
+    padding: 0 20px;
+    font-size: 22px;
+    font-weight: 600;
+    color: white;
+    background-color: #1667b8;
+    border-radius: 18.75px;
+    height: 75%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: -2px 3px 5px 1px grey;
+}
+
+.receipt-photos-btn {
+    background-color: none;
+    border: none;
+    flex: 1;
+}
+
+.receipt-photos-icon {
+    font-size: 32px;
+    color: #354570;
+}
+
+.camera-input {
+    display: none;
+}
+
+#photo-viewer {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 15px 0;
+    justify-content: space-around;
+}
+
+.receipt-image-wrapper {
+    position: relative;
+    width: 27vw;
+    max-width: 200px;
+    height: 27vw;
+    max-height: 200px;
+    border-radius: 18px;
+    box-shadow: -2px 3px 5px 1px grey;
+    margin: 10px 0;
+}
+
+.receipt-image {
+    width: 27vw;
+    max-width: 200px;
+    height: 27vw;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.image-remove {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: red;
+    border: none;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+}
+
+/* Submit Expense Btn */
+
+#submit-expense-btn-space {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 10vh;
+}
+
+#submit-expense-btn-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1667b8;
+    height: 50px;
+    border-radius: 25px;
+    box-shadow: -2px 3px 5px 1px grey;
+}
+
+#submit-expense-btn {
+    color: white;
+    border: none;
+    background-color: #1667b8;
+    font-size: 24px;
+    font-weight: 600;
+    border-radius: 25px;
+    padding: 0 20px;
+}
