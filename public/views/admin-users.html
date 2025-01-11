@@ -13,17 +13,20 @@
         <div id="edit-user-div">
             <div id="edit-user-inputs">
                 <div class="edit-user-btns-top">
-                    <input id="edit-user-number" class="edit-user-btn fake-btn" type="text" placeholder="Number">
-                    <input id="edit-user-description" class="edit-user-btn fake-btn" type="text" placeholder="Description">
+                    <input id="edit-user-fname" class="edit-user-btn fake-btn" type="text" placeholder="First Name">
+                    <input id="edit-user-lname" class="edit-user-btn fake-btn" type="text" placeholder="Last Name">
                 </div>
-                <select id="edit-user-user"></select>
+                <input id="edit-user-email" class="edit-user-btn fake-btn" type="text" placeholder="email">
+                <div class="edit-user-btns-top">
+                    <input id="edit-user-password" class="edit-user-btn fake-btn" type="text" placeholder="New Password">
+                    <input id="edit-user-password-confirm" class="edit-user-btn fake-btn" type="text" placeholder="Confirm Password">
+                </div>
             </div>
             <div id="edit-user-btns">
                 <div class="edit-user-btns-top">
                     <button id="edit-user-cancel" class="edit-user-btn cancel">Cancel</button>
-                    <button id="edit-user-save-another" class="edit-user-btn save-another">Save/Add Another</button>
+                    <button id="edit-user-save" class="edit-user-btn save">Save</button>
                 </div>
-                <button id="edit-user-save" class="edit-user-btn save">Save</button>
             </div>
         </div>
         <button id="delete-btn">Delete</button>
@@ -69,6 +72,10 @@
             </nav>
         </div>
         <script src="../js/adjustview.js"></script>
+        <script src="../js/a_users-fetchusers.js"></script>
+        <script src="../js/a_users-edituser.js"></script>
+        <script src="../js/a_users-controleditmodal.js"></script>
+        <script src="../js/a_users-deleteuser.js"></script>
         <script src="../js/navbar-countdown.js"></script>
         <script src="../js/navbar-navigation.js"></script>
         <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

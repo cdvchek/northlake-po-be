@@ -360,3 +360,60 @@ body {
     border-radius: 25px;
     padding: 0 20px;
 }
+
+#back-confirm-modal-background {
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    background-color: rgba(99, 99, 99, 0.5);
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 100vw;
+    z-index: 5;
+}
+
+#back-confirm-modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: white;
+    height: 150px;
+    min-width: 85vw;
+    width: 350px;
+    border-radius: 20px;
+}
+
+#back-confirm-text {
+    padding: 0 20px;
+    font-size: 22px;
+    margin: 0;
+}
+
+#back-confirm-btns-div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#back-confirm-cancel {
+    font-size: 18px;
+    background-color: rgb(202, 106, 106);
+    border: none;
+    height: 35px;
+    min-width: 40%;
+    border-radius: 10px;
+    margin: 0 10px;
+}
+
+#back-confirm-confirm {
+    font-size: 18px;
+    background-color: rgb(119, 189, 119);
+    border: none;
+    height: 35px;
+    width: 40%;
+    border-radius: 10px;
+    margin: 0 10px;
+}

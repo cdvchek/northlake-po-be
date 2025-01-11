@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Expense } = require("../models");
 const router = require('express').Router();
 const tokenAuth = require("../middleware/tokenAuth");
 const printError = require('../utils/utils');
@@ -97,7 +97,7 @@ router.get('/all', tokenAuth, async (req, res) => {
 
 router.get('/all-email', tokenAuth, async (req, res) => {
     try {
-        const users = await User.findAll();
+        const users = await User.findAll({ order: [[ 'last_name', 'ASC' ]]});
         const shortUsers = users.map((user) => {
             return { id: user.id, name: `${user.first_name} ${user.last_name}`, email: user.email,};
         });
@@ -140,8 +140,14 @@ router.put('/id/:id', tokenAuth, async (req, res) => {
 
 router.delete('/:id', tokenAuth, async (req, res) => {
     try {
-        const destroy = await User.destroy({ where: { id: req.params.id }});
-        res.json(destroy);
+        const expenses = await Expense.findAll({ where: { UserId: req.params.id }});
+        console.log(expenses);
+        if (expenses.length === 0) {
+            const destroy = await User.destroy({ where: { id: req.params.id }});
+            res.json(destroy);
+        } else {
+            res.sendStatus(409);
+        }
     } catch (error) {
         res.sendStatus(500);
         console.error(error);

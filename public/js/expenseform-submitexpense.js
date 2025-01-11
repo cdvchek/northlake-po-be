@@ -18,7 +18,9 @@ const checkInputValidity = () => {
 
     switch (expenseTypeInput.value) {
         case 'church-credit-card':
-            if (notMyCardValue && ccNameInput.value === '') {
+            console.log(notMyCardBox.value);
+            
+            if (notMyCardBox.checked && ccNameInput.value === '') {
                 passing = false;
                 // mark ccNameInput as required
             }

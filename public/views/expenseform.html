@@ -10,6 +10,15 @@
 </head>
 <body>
     <div id="content">
+        <div id="back-confirm-modal-background" style="display: none;">
+            <div id="back-confirm-modal">
+                <p id="back-confirm-text">There are unsaved changes, leaving will discard your changes.</p>
+                <div id="back-confirm-btns-div">
+                    <button id="back-confirm-cancel">Stay</button>
+                    <button id="back-confirm-confirm">Leave</button>
+                </div>
+            </div>
+        </div>
         <div id="back-btn-wrapper">
             <button id="go-back-btn">
                 <ion-icon id="back-btn-icon" name="arrow-back-circle-outline"></ion-icon>
@@ -132,12 +141,12 @@
         <script src="../js/receiptphotofullscreen.js"></script>
         <script src="../js/expenseform-filloutform.js"></script>
         <script src="../js/expenseform-fetchmyexpensenumbers.js"></script>
-        <script src="../js/expenseform-backbutton.js"></script>
         <script src="../js/expenseform-simpleinputcontroller.js"></script>
         <script src="../js/expenseform-submitexpense.js"></script>
         <script src="../js/expenseform-expensedefinerscontroller.js"></script>
-        <script src="../js/expenseform-imagecontroller.js"></script>
         <script src="../js/expenseform-imagebuttons.js"></script>
+        <script src="../js/expenseform-imagecontroller.js"></script>
+        <script src="../js/expenseform-backbutton.js"></script>
         <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
         <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     </div>

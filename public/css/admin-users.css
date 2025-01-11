@@ -34,7 +34,7 @@ body {
     color: #354570;
 }
 
-/* Expense List */
+/* User List */
 
 #users-list-space {
     position: relative;
@@ -50,7 +50,7 @@ body {
     align-items: center;
 }
 
-/* Expense numbers */
+/* Users */
 
 .user {
     position: relative;
@@ -86,19 +86,7 @@ body {
     text-align: center;
 }
 
-/* Add Button */
-
-#edit-user-btn {
-    position: fixed;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    top: 24px;
-    right: 24px;
-    font-size: 40px;
-    color: #354570;
-    border: none;
-}
+/* Edit User */
 
 #edit-user-div-background {
     display: none;
@@ -119,7 +107,7 @@ body {
     justify-content: space-around;
     align-items: center;
     background-color: white;
-    height: 250px;
+    height: 300px;
     min-width: 85vw;
     width: 350px;
     border-radius: 20px;
@@ -175,12 +163,7 @@ body {
     background-color: rgb(202, 106, 106);
 }
 
-#edit-user-save-another {
-    background-color: rgb(103, 155, 203);
-}
-
 #edit-user-save {
-    width: calc(80% + 20px);
     background-color: rgb(119, 189, 119);
 }
 

@@ -18,6 +18,7 @@ const removedPhotosDiv = document.getElementById('removed-photos');
 const removedExpenseDefinersDiv = document.getElementById('removed-expense-definers');
 const fullScreenDivFill = document.getElementById('photo-fullscreen-div');
 const fullScreenImgFill = document.getElementById('photo-fullscreen');
+const ff_backBtn = document.getElementById('go-back-btn');
 
 const openFullscreenFill = (e) => {
     if (e.target.src) {
@@ -212,6 +213,7 @@ const fillOutForm = async () => {
         vendor: response.vendor,
     }});
     newSubmitExpenseBtn.dispatchEvent(event);
+    ff_backBtn.dispatchEvent(event);
 }
 
 expenseNumbersHolderDiv.addEventListener('childrenloaded', fillOutForm);
