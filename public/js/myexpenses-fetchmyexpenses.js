@@ -1,6 +1,13 @@
 const fetchExpenses = async () => {
-    const response = await (await fetch(window.location.origin + '/expenses/myexpenses')).json();
-    return response;
+    try {
+        const response = await fetch(window.location.origin + '/expenses/myexpenses');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.log("Fetch: myexpenses", error);
+        alert("An error occurred while loading your expenses. Refresh or try again later.");
+        return [];
+    }
 }
 
 const goToEditExpense = (e) => {

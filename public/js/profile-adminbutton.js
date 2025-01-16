@@ -6,8 +6,15 @@ const goToAdmin = () => {
 }
 
 const adminCheck = async () => {
-    const response = await (await fetch(window.location.origin + '/user/admincheck')).json();    
-    return response.isAdmin;
+    try {
+        const response = await fetch(window.location.origin + '/user/admincheck');
+        const data = await response.json();
+        return data.isAdmin;    
+    } catch (error) {
+        console.log("Fetch: profile", error);
+        alert("An error occurred while loading your profile information. Refresh or try again later.");
+        return false;
+    }
 }
 
 const adminCheckWrapper = async () => {

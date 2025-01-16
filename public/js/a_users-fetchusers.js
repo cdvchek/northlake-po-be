@@ -1,9 +1,11 @@
 const fu_fetchUsers = async () => {
-    const response = await fetch(window.location.origin + '/user/all-email');
-
-    if (response.ok) {
+    try {
+        const response = await fetch(window.location.origin + '/user/all-email');
         const data = await response.json();
         fu_displayUsers(data);
+    } catch (error) {
+        console.log("Fetch: a_users", error);
+        alert("There was an error while loading employees. Refresh or try again later.");
     }
 }
 

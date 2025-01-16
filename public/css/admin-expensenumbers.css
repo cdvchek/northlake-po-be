@@ -108,7 +108,7 @@ body {
     background-color: rgba(99, 99, 99, 0.5);
     top: 0px;
     left: 0px;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
     z-index: 5;
 }

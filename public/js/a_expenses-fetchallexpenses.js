@@ -1,12 +1,14 @@
 
 const fetchAllExpenses = async () => {
-    const rawResponse = await fetch(window.location.origin + '/expenses/allexpenses');
-    console.log(rawResponse);
-
-    const response = await rawResponse.json();
-    console.log(response);
-    
-    return response;
+    try {
+        const response = await fetch(window.location.origin + '/expenses/allexpenses');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.log("Fetch: a_expenses", error);
+        // TODO: display an error occured while fetching expenses
+        return [];
+    }    
 }
 
 const goToViewExpense = (e) => {
@@ -24,9 +26,7 @@ const goToViewExpense = (e) => {
 const expensesList = document.getElementById('expenses-list');
 
 const executeFetchingAndAppend = async () => {
-    const expenses = await fetchAllExpenses();
-    console.log(expenses);
-    
+    const expenses = await fetchAllExpenses();    
 
     expenses.forEach(expense => {
         // Create Expense Li

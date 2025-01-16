@@ -11,8 +11,8 @@ const startTimer = () => {
     const sessionStart = Number(sessionStartString);
 
     const now = Date.now();
-    // Sessions are 15 mins, get the time from the start of the session and subtract that from 15 mins
-    const secondsLeftInSession = Math.floor(((15 * 60 * 1000) - (now - sessionStart)) / 1000);
+    // Sessions are 20 mins, get the time from the start of the session and subtract that from 15 mins
+    const secondsLeftInSession = Math.floor(((20 * 60 * 1000) - (now - sessionStart)) / 1000);
     const minutesLeftInSession = Math.floor(secondsLeftInSession / 60);
 
     let currentTime = secondsLeftInSession;

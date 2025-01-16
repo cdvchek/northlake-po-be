@@ -24,33 +24,29 @@ const du_deleteUser = async (e) => {
     } else {
         du_resetDeleteBtn();
         const idToDelete = e.target.getAttribute('data-id');
-        
-        const response = await fetch(window.location.origin + '/user/' + idToDelete, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-    
-        if (!response.ok) {
-            if (response.status === '409') {
-                // say user still has existing expenses, cannot delete
-                console.log("user still has existing expenses");
+
+        try {
+            const response = await fetch(window.location.origin + '/user/' + idToDelete, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.status === 409) alert("Employee could not be deleted. Employees with existing expenses cannot be deleted.");
+            else if (response.ok) {   
+                const deleteLi = document.getElementById('user-' + idToDelete);
+                deleteLi.remove();
                 
-            } else {
-                // say some other error
+                du_modal.style.display = 'none';
+                du_fnameInput.value = "";
+                du_lnameInput.value = "";
+                du_emailInput.value = "";
+                du_passwordInput.value = "";
+                du_passConfirmInput.value = "";
             }
-        }
-        else {
-            const deleteLi = document.getElementById('user-' + idToDelete);
-            deleteLi.remove();
-    
-            du_modal.style.display = 'none';
-            du_fnameInput.value = "";
-            du_lnameInput.value = "";
-            du_emailInput.value = "";
-            du_passwordInput.value = "";
-            du_passConfirmInput.value = "";
+        } catch (error) {
+            console.log("DELETE: a_users", error);
         }
     }
 }

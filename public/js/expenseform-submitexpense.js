@@ -100,28 +100,19 @@ const submitExpense = async () => {
     // Attach photos to form
     for (let i = 0; i < imageFiles.length; i++) formData.append('image', imageFiles[i]);
 
-    // Convert FormData to a plain object
-    const formDataObject = {};
-    formData.forEach((value, key) => {
-        formDataObject[key] = value;
-    });
-
-    // Log the plain object
-    console.log(formDataObject);
-
     // Send form to server
-    const response = await fetch(window.location.origin + '/expenses/newexpense', {
-        method: 'POST',
-        body: formData,
-    });
-
-    // go back to myexpenses page
-    if (response.ok) {
+    try {
+        await fetch(window.location.origin + '/expenses/newexpense', {
+            method: 'POST',
+            body: formData,
+        });
+        
         const hrefArr = window.location.href.split('count=');
         const sessionStartString = hrefArr[hrefArr.length - 1];
         window.location.href = window.location.origin + '/web/myexpenses_count=' + sessionStartString;
-    } else {
-        console.log(response);
+    } catch (error) {
+        console.log("POST: expenseform", error);
+        alert("An error occurred while submitting your expense your expense. Refresh or try again later.");
     }
 }
 
@@ -314,32 +305,20 @@ const saveExpense = async () => {
         formData.append(`receiptPhoto_remove_${i}`, idToRemove);
     }
 
-    // Convert FormData to a plain object
-    const formDataObject = {};
-    formData.forEach((value, key) => {
-        formDataObject[key] = value;
-    });
+    try {
+        // Send form to server
+        await fetch(window.location.origin + '/expenses/image/' + expenseIdSubmit, {
+            method: 'PUT',
+            body: formData,
+        });
 
-    // Log the plain object
-    console.log(formDataObject);
-
-    // Send form to server
-    const response = await fetch(window.location.origin + '/expenses/image/' + expenseIdSubmit, {
-        method: 'PUT',
-        body: formData,
-    });
-
-    console.log(response);
-    
-
-    // go back to myexpenses page
-    // if (response.ok) {
-    //     const hrefArr = window.location.href.split('count=');
-    //     const sessionStartString = hrefArr[hrefArr.length - 1];
-    //     window.location.href = window.location.origin + '/web/myexpenses_count=' + sessionStartString;
-    // } else {
-    //     console.log(response);
-    // }
+        const hrefArr = window.location.href.split('count=');
+        const sessionStartString = hrefArr[hrefArr.length - 1];
+        window.location.href = window.location.origin + '/web/myexpenses_count=' + sessionStartString;
+    } catch (error) {
+        console.log("PUT: expenseform", error);
+        alert("An error occurred while saving your expense. Refresh or try again later.");
+    }    
 }
 
 submitExpenseBtn.addEventListener('click', submitSaveWrapper);

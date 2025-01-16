@@ -30,15 +30,15 @@ const eu_saveUser = async (e) => {
         }
     }
 
-    const response = await fetch(window.location.origin + '/user/id/' + idToEdit, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ update, }),
-    });
-
-    if (response.ok) {
+    try {
+        await fetch(window.location.origin + '/user/id/' + idToEdit, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ update, }),
+        });
+        
         const editedLi = document.getElementById('user-' + idToEdit);
         editedLi.children[0].children[0].textContent = `${fname} ${lname}`;
         editedLi.children[1].children[0].textContent = email;
@@ -46,11 +46,12 @@ const eu_saveUser = async (e) => {
         eu_modal.style.display = 'none';
         eu_fnameInput.value = "";
         eu_lnameInput.value = "";
-        ce_emailInput.value = "";
+        eu_emailInput.value = "";
         eu_passwordInput.value = "";
         eu_passConfirmInput.value = "";
-    } else {
-        // TODO: show error
+    } catch (error) {
+        console.log("PUT: a_users", error);
+        alert("An error occurred while saving the employee.");
     }
 }
 

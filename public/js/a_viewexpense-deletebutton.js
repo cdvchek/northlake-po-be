@@ -28,15 +28,13 @@ const db_deleteExpense = async () => {
         try {
             const response = await fetch(window.location.origin + '/expenses/' + db_id, { method: 'DELETE' });
             if (response.ok) {
-                console.log("Expense deleted successfully.");
                 // Add any post-deletion logic here, e.g., updating the UI
                 window.location.href = window.location.origin + '/web/admin-expenses_count=' + bb_sessionStart;
             } else {
-                console.error("Failed to delete expense.");
                 alert("An error occurred while deleting the expense.");
             }
         } catch (error) {
-            console.error("Error:", error);
+            console.error("DELETE:", error);
             alert("An error occurred while deleting the expense.");
         }
     }

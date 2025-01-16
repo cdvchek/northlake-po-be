@@ -1,9 +1,7 @@
 const logoutBtn = document.getElementById('logout-btn');
 
 const logoutFunction = async () => {
-    // hit the logout route
-
-    // go to login page after successful logout
+    window.location.href = window.location.origin + '/web/login';
 }
 
 logoutBtn.addEventListener('click', logoutFunction);

@@ -148,6 +148,8 @@ const bb_checkValues = () => {
 }
 
 const goBack = () => {
+    if (id === '-1') window.location.href = window.location.origin + '/web/myexpenses_count=' + sessionStartString;
+    
     let addressMiddle;
     if (goingBackTo === 'user') addressMiddle = '/web/myexpenses_count=';
     if (goingBackTo === 'admin') addressMiddle = '/web/admin-viewexpense_id=' + id + '&prev=admin&count=';

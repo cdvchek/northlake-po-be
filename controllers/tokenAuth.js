@@ -57,7 +57,7 @@ router.post('/login', async (req, res) => {
 
 const generateTokens = async (user) => {
     const {exp, ...userWithoutExp} = user;
-    const accessToken = jwt.sign(userWithoutExp, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+    const accessToken = jwt.sign(userWithoutExp, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20m' });
     return { accessToken };
 }
 

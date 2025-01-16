@@ -27,21 +27,24 @@ const loginUser = async () => {
     if (checkInputs() !== 0) return;
 
     // Login User
-    const response = await fetch(window.location.origin + '/tokenAuth/login', {
-        method: 'POST', // Specify the HTTP method
-        headers: {
-            'Content-Type': 'application/json', // Set the content type to JSON
-        },
-        body: JSON.stringify({
-            email: emailInput.value,
-            password: passwordInput.value,
-        }), // Convert the data to a JSON string
-    });
+    try {
+        const response = await fetch(window.location.origin + '/tokenAuth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: emailInput.value,
+                password: passwordInput.value,
+            }),
+        });
 
-    if (response.ok) {
-        const responseObj = await response.json();
-        const sessionStart = responseObj.user.session_start;
+        const data = await response.json();
+        const sessionStart = data.user.session_start;
         window.location.href = window.location.origin + '/web/myexpenses_count=' + sessionStart;
+    } catch (error) {
+        console.log("POST: login", error);
+        alert("An error occurred while logging in. Refresh or try again later.");
     }
 }
 

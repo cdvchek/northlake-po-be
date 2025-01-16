@@ -54,7 +54,7 @@ const registerUser = async () => {
     // Inputs must be filled in
     if (checkInputs() !== 0) return;
 
-    // Register User
+    // Register UserObj
     const registerObj = {
         isAdmin: adminIsChecked,
         db_access_key: dbPasswordInput.value,
@@ -64,34 +64,37 @@ const registerUser = async () => {
         password: passwordInput.value,
     }
 
-    // Register User
-    const responseSignup = await fetch(window.location.origin + '/user/signup', {
-        method: 'POST', // Specify the HTTP method
-        headers: {
-            'Content-Type': 'application/json', // Set the content type to JSON
-        },
-        body: JSON.stringify(registerObj), // Convert the data to a JSON string
-    });
+    try {
+        // Register User
+        await fetch(window.location.origin + '/user/signup', {
+            method: 'POST', // Specify the HTTP method
+            headers: {
+                'Content-Type': 'application/json', // Set the content type to JSON
+            },
+            body: JSON.stringify(registerObj), // Convert the data to a JSON string
+        });
 
-    if (!responseSignup.ok) return;
+        // Login User
+        const responseLogin = await fetch(window.location.origin + '/tokenAuth/login', {
+            method: 'POST', // Specify the HTTP method
+            headers: {
+                'Content-Type': 'application/json', // Set the content type to JSON
+                // Add other headers here if necessary, like Authorization
+            },
+            body: JSON.stringify({
+                email: emailInput.value,
+                password: passwordInput.value,
+            }), // Convert the data to a JSON string
+        });
 
-    // Login User
-    const response = await fetch(window.location.origin + '/tokenAuth/login', {
-        method: 'POST', // Specify the HTTP method
-        headers: {
-            'Content-Type': 'application/json', // Set the content type to JSON
-            // Add other headers here if necessary, like Authorization
-        },
-        body: JSON.stringify({
-            email: emailInput.value,
-            password: passwordInput.value,
-        }), // Convert the data to a JSON string
-    });
-
-    if (response.ok) {
-        const responseObj = await response.json();
-        const sessionStart = responseObj.user.session_start;
+        const loginData = await responseLogin.json();
+        const sessionStart = loginData.user.session_start;
         window.location.href = window.location.origin + '/web/myexpenses_count=' + sessionStart;
+    } catch (error) {
+        console.log("Fetch: registeruser", error);
+        // TODO: Determine whether it was a signup error or a login error
+        // If signup error, say something went wrong
+        // If login error, say a user was made, but not logged in. Go to login page and try there.
     }
 }
 
