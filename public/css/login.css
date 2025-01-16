@@ -32,7 +32,8 @@ body {
 
 #logo {
     margin: auto;
-    width: 60%;
+    width: 220px;
+    height: 220px;
 }
 
 /* Credentials */
