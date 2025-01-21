@@ -3,13 +3,15 @@ const se_id = se_paramsArr[0].split('=')[1];
 const se_saveBtn = document.getElementById('save-btn');
 const { jsPDF } = window.jspdf;
 
-const se_loadImage = (url) => {
+const se_loadImage = (url, delay = 100) => {
     return new Promise((resolve, reject) => {
-        const image = new Image();
-        image.crossOrigin = 'Anonymous';
-        image.src = url;
-        image.onload = () => resolve(image);
-        image.onerror = (error) => reject(new Error(`Failed to load image at ${url}: ${error.message}`));
+        setTimeout(() => {
+            const image = new Image();
+            image.crossOrigin = 'Anonymous';
+            image.src = url;
+            image.onload = () => resolve(image);
+            image.onerror = (error) => reject(new Error(`Failed to load image at ${url}: ${error.message}`));
+        }, delay);
     });
 }
 
@@ -26,25 +28,32 @@ const se_convertImageToJPEG = (image) => {
 }
 
 const se_addImagesToPDF = async (imageUrls, pdf, pdfWidth, pdfHeight, data) => {
-    let loadPromises = imageUrls.map(url => se_loadImage(url).then(image => se_convertImageToJPEG(image)));
     try {
-        const imageBlobs = await Promise.all(loadPromises);
-        imageBlobs.forEach((blob) => {
-            const url = URL.createObjectURL(blob);
+        for (const url of imageUrls) {
+            const image = await se_loadImage(url); // Load image synchronously
+            const blob = await se_convertImageToJPEG(image); // Convert image synchronously
+            const blobUrl = URL.createObjectURL(blob);
             pdf.addPage();
-            pdf.addImage(url, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-            URL.revokeObjectURL(url);
-        });
+            pdf.addImage(blobUrl, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+            URL.revokeObjectURL(blobUrl);
+        }
         const fileNameDate = `${data.date.slice(10, 14)}.${data.date.slice(0, 2)}.${data.date.slice(5, 7)}`;
         pdf.save(`${fileNameDate}-${data.name.split(' ').join('_')}-${data.vendor.split(' ').join('_')}-$${data.amount}.pdf`);
     } catch (error) {
         console.error("Error loading and converting images", error);
     }
-}
+};
 
-const se_saveExpense = () => {
+const forceRepaint = () => {
+    return new Promise((resolve) => {
+        requestAnimationFrame(() => {
+            setTimeout(() => resolve(), 50); // Delay of 50ms
+        });
+    });
+};
+
+const se_saveExpense = async () => {
     const data = global_expenseData.data;
-    console.log(data);
 
     // Define maximum dimensions for the image on the PDF
     const pdfWidth = 210;
@@ -249,9 +258,21 @@ const se_saveExpense = () => {
     pdf.setTextColor(0, 80, 180);
     pdf.text("Purchase Total", 96, bottomY + 8);
 
+    await forceRepaint();
+
     // Add images
     const imageUrls = global_expenseData.imageData.map((imageData) => imageData.url);
-    se_addImagesToPDF(imageUrls, pdf, pdfWidth, pdfHeight, data);
+    
+    try {
+        await se_addImagesToPDF(imageUrls, pdf, pdfWidth, pdfHeight, data);
+        
+        console.log('PDF successfully generated and saved!');
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+    }
 }
 
-se_saveBtn.addEventListener('click', se_saveExpense);
+se_saveBtn.addEventListener('click', async () => {
+    console.log("Save button clicked");
+    await se_saveExpense();
+});
