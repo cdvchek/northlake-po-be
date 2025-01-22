@@ -72,10 +72,11 @@ body {
 .simple-input-title-wrapper {
     background-color: #1667b8;
     border-radius: 18.75px;
-    padding: 0 20px;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 110px;
 }
 
 .simple-input-title {
@@ -89,7 +90,7 @@ body {
     border-radius: 18.75px;
     background-color: white;
     flex: 1;
-    text-align: end;
+    text-align: left;
     padding: 0 20px;
     font-size: 18px;
 }
