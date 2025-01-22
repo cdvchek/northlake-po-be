@@ -255,7 +255,7 @@ const se_saveExpense = async () => {
         await se_addImagesToPDF(imgElements, pdf, pdfWidth, pdfHeight);
 
         // Save the PDF
-        const formattedDate = `${data.date.slice(10, 14)}.${data.date.slice(0, 2)}.${data.date.slice(5, 7)}`;
+        const formattedDate = `${data.date.slice(6, 10)}.${data.date.slice(0, 2)}.${data.date.slice(3, 5)}`;
         const fileName = `${formattedDate}-${data.name.replace(/\s/g, '_')}-${data.vendor.replace(/\s/g, '_')}-$${data.amount}.pdf`;
         pdf.save(fileName);
 
