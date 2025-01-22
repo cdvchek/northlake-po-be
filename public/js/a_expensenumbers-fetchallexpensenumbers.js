@@ -25,7 +25,7 @@ const ae_editExpenseNumber = (e) => {
     ae_deleteBtn.setAttribute('data-id', expenseNumberId);
 
     const number = target.children[0].children[0].textContent;
-    const description = target.children[1].children[0].textContent;
+    const description = target.children[1].children[0].getAttribute('data-description');
     const user = target.children[2].children[0].getAttribute('data-id');
 
     ae_numberInput.value = number;
@@ -62,8 +62,9 @@ const ae_executeFetchingAndAppend = async () => {
         // Create Description Text
         const descriptionText = document.createElement('p');
         descriptionText.setAttribute('class', 'expense-number-identifier-text');
+        descriptionText.setAttribute('data-description', expenseNumber.description);
         const fullDescription = expenseNumber.description;
-        let shortDescription = expenseNumber.description.substring(0, 18);
+        let shortDescription = expenseNumber.description.substring(0, 24);
         if (shortDescription[shortDescription.length - 1] === ' ') shortDescription = fullDescription.substring(0, 17);
         descriptionText.textContent = (fullDescription.length !== shortDescription.length) ? shortDescription + "..." : fullDescription;
 
