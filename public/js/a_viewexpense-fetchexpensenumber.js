@@ -101,6 +101,7 @@ const fe_fillOutForm = async () => {
             const image = document.createElement('img');
             image.setAttribute('class', 'photo');
             image.setAttribute('src', imageData.url);
+            image.setAttribute('crossorigin', 'anonymous');
             image.style.height = '140px';
     
             photoDiv.appendChild(image);
