@@ -57,7 +57,6 @@ const se_saveExpense = async () => {
         // Colored bar with employee name
         pdf.setFillColor(0, 155, 219); // setting bar color
         pdf.rect(30,30, pdfWidth - 60, 7,'F'); // drawing the bar
-
         pdf.setTextColor(255, 255, 255); // setting text color to white
         pdf.setFontSize(12); // smaller text
         data.name = `${data.User.first_name} ${data.User.last_name}`;
@@ -80,7 +79,7 @@ const se_saveExpense = async () => {
         // Drawing the line under the Purchase Order title
         pdf.setLineWidth(.4);
         pdf.line(30, 48, 180, 48);
-
+        
         // Drawing the purchase date text
         pdf.setFontSize(11);
         pdf.setFont(undefined, "bold");
@@ -176,7 +175,6 @@ const se_saveExpense = async () => {
 
         // Keep track of offset
         let totalOffset = 0;
-
         // Loop through each expense definer
         for (let i = 0; i < data.ExpenseDefiners.length; i++) {
             // Grab business purpose and width and set up array
@@ -229,7 +227,7 @@ const se_saveExpense = async () => {
 
             // Expense definer amount display
             pdf.text(`$${data.ExpenseDefiners[i].amount}`, 160, 120 + ((i + totalOffset) * 6));
-
+            
             // Add to the total offset
             totalOffset += (numberOfLines - 1);
         }
@@ -245,7 +243,7 @@ const se_saveExpense = async () => {
         pdf.line(140, bottomY + 10, 180, bottomY + 10);
         pdf.setFontSize(18);
         pdf.text(`$${data.amount}`, 145, bottomY + 8);
-
+        
         // Purchase total
         pdf.setTextColor(0, 80, 180);
         pdf.text("Purchase Total", 96, bottomY + 8);
