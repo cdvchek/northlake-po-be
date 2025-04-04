@@ -25,7 +25,7 @@ body {
 }
 
 #back-btn {
-    left: 12px
+    left: 12px;
 }
 
 #edit-btn {
@@ -37,11 +37,12 @@ body {
 }
 
 .top-btn {
+    height: 40px;
+    width: 40px;
     top: 24px;
     position: absolute;
     border: none;
     background: none;
-    font-size: 32px;
     color: black;
 }
 

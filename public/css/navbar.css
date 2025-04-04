@@ -45,8 +45,9 @@
     height: 100%;
 }
 
-.navbar-icon {
-    font-size: 32px;
+.icon-nav {
+    width: 32px;
+    height: 32px;
     color: #354570;
 }
 

@@ -36,9 +36,6 @@ const goToExpenses = () => {
     }
 }
 
-console.log(backToUser);
-
-
 const goToExpenseNumbers = () => {
     const checker = hrefArr[hrefArr.length - 1].substring(0, 20);
     console.log("CHECKER:", checker);

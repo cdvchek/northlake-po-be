@@ -20,6 +20,8 @@ body {
 #go-back-btn {
     background-color: none;
     border: none;
+    height: 40px;
+    width: 40px;
 }
 
 #back-btn-icon {
@@ -280,8 +282,9 @@ body {
     flex: 1;
 }
 
-.receipt-photos-icon {
-    font-size: 32px;
+.photo-icon {
+    height: 40px;
+    width: 40px;
     color: #354570;
 }
 
