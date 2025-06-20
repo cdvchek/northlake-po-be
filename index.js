@@ -19,11 +19,11 @@ app.use(cors());
 // }));
 
 app.use(session({
-    secret: 'your-secret-key',  // Replace with a secure key of your choice
+    secret: process.env.SECRET,  // Replace with a secure key of your choice
     resave: false,  // Don't save the session if it wasn't modified
     saveUninitialized: false,  // Don't create a session until something is stored
     cookie: {
-        maxAge: 1000 * 60 * 15, // Session expiration: 15 mins (in milliseconds)
+        maxAge: 1000 * 60 * 99, // Session expiration: 15 mins (in milliseconds)
         secure: false,
     }
 }));

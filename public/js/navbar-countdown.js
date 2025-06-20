@@ -12,7 +12,7 @@ const startTimer = () => {
 
     const now = Date.now();
     // Sessions are 20 mins, get the time from the start of the session and subtract that from 15 mins
-    const secondsLeftInSession = Math.floor(((20 * 60 * 1000) - (now - sessionStart)) / 1000);
+    const secondsLeftInSession = Math.floor(((99 * 60 * 1000) - (now - sessionStart)) / 1000);
     const minutesLeftInSession = Math.floor(secondsLeftInSession / 60);
 
     let currentTime = secondsLeftInSession;
