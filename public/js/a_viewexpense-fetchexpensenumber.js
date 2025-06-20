@@ -6,6 +6,11 @@ const fe_photoFullscreen = document.getElementById('photo-fullscreen');
 
 let global_expenseData = {};
 
+const extractOriginalFilename = (s3Key) => {
+    const match = s3Key.match(/\^\^(.*?)\^\^/);
+    return match ? match[1] : 'unknown';
+}
+
 const fe_openPhoto = async (e) => {
     fe_photoFullscreenDiv.style.display = 'flex';
     fe_photoFullscreen.src = e.target.src;
@@ -93,19 +98,42 @@ const fe_fillOutForm = async () => {
         const photosDiv = document.getElementById('receipt-photos');
         for (let i = 0; i < imageUrlsResponse.length; i++) {
             const imageData = imageUrlsResponse[i];
-            
-            const photoDiv = document.createElement('div');
-            photoDiv.setAttribute('class', 'photo-div');
-            photoDiv.addEventListener('click', fe_openPhoto);
-    
-            const image = document.createElement('img');
-            image.setAttribute('class', 'photo');
-            image.setAttribute('src', imageData.url);
-            image.setAttribute('crossorigin', 'anonymous');
-            image.style.height = '140px';
-    
-            photoDiv.appendChild(image);
-            photosDiv.appendChild(photoDiv);
+            const url = imageData.url;
+            const isPdf = url.includes('.pdf') || imageData.id?.toString().endsWith('.pdf');
+
+            const wrapperDiv = document.createElement('div');
+            wrapperDiv.setAttribute('class', 'photo-div');
+
+            if (isPdf) {
+                const keyFromUrl = decodeURIComponent(new URL(url).pathname.split('/').pop());
+                const originalName = extractOriginalFilename(keyFromUrl);
+
+                const pdfBtn = document.createElement('div');
+                pdfBtn.className = 'pdf-preview';
+                pdfBtn.textContent = originalName;
+                pdfBtn.setAttribute('data-url', url);
+                pdfBtn.setAttribute('class', 'pdf');
+                pdfBtn.style.cursor = 'pointer';
+                pdfBtn.style.textAlign = 'center';
+                pdfBtn.style.padding = '12px';
+                pdfBtn.style.border = '1px solid #aaa';
+                pdfBtn.style.margin = '8px 0';
+                pdfBtn.addEventListener('click', () => {
+                    window.open(url, '_blank');
+                });
+
+                wrapperDiv.appendChild(pdfBtn);
+            } else {
+                const image = document.createElement('img');
+                image.setAttribute('class', 'photo');
+                image.setAttribute('src', url);
+                image.setAttribute('crossorigin', 'anonymous');
+                image.style.height = '140px';
+                wrapperDiv.addEventListener('click', fe_openPhoto);
+                wrapperDiv.appendChild(image);
+            }
+
+            photosDiv.appendChild(wrapperDiv);
         }
     } catch (error) {
         console.log("Fetch: a_viewexpense", error);

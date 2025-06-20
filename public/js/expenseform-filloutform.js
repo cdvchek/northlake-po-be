@@ -20,6 +20,11 @@ const fullScreenDivFill = document.getElementById('photo-fullscreen-div');
 const fullScreenImgFill = document.getElementById('photo-fullscreen');
 const ff_backBtn = document.getElementById('go-back-btn');
 
+const extractOriginalFilename = (s3Key) => {
+    const match = s3Key.match(/\^\^(.*?)\^\^/);
+    return match ? match[1] : 'unknown';
+}
+
 const openFullscreenFill = (e) => {
     if (e.target.src) {
         fullScreenDivFill.style.display = 'flex';    
@@ -163,6 +168,9 @@ const fillOutForm = async () => {
             const imageData = imageUrlsResponse[i];
             const imageUrl = imageData.url;
             const imageId = imageData.id;
+
+            const keyFromUrl = decodeURIComponent(new URL(imageUrl).pathname.split('/').pop());
+            const originalName = extractOriginalFilename(keyFromUrl);
             
             // Wrapper div
             const wrapperDiv = document.createElement('div');
@@ -170,11 +178,27 @@ const fillOutForm = async () => {
             wrapperDiv.setAttribute('data-id', imageId);
             wrapperDiv.addEventListener('click', openFullscreenFill);
     
-            // Image
-            const image = document.createElement('img');
-            image.setAttribute('class', 'receipt-image');
-            image.setAttribute('alt', 'picture of receipt being submitted');
-            image.setAttribute('src', imageUrl);
+            let fileDisplayElement;
+            if (imageUrl.includes('.pdf')) {
+                // It's a PDF
+                fileDisplayElement = document.createElement('div');
+                fileDisplayElement.setAttribute('class', 'pdf-preview');
+                fileDisplayElement.textContent = `View ${originalName}`;
+                fileDisplayElement.style.cursor = 'pointer';
+                fileDisplayElement.style.textAlign = 'center';
+                fileDisplayElement.style.padding = '1em';
+                fileDisplayElement.addEventListener('click', () => {
+                    window.open(imageUrl, '_blank');
+                });
+            } else {
+                // It's an image
+                fileDisplayElement = document.createElement('img');
+                fileDisplayElement.setAttribute('class', 'receipt-image');
+                fileDisplayElement.setAttribute('alt', 'picture of receipt being submitted');
+                fileDisplayElement.setAttribute('src', imageUrl);
+                wrapperDiv.addEventListener('click', openFullscreenFill);
+            }
+
     
             // Remove Btn
             const removeBtn = document.createElement('button');
@@ -187,7 +211,7 @@ const fillOutForm = async () => {
                 e.target.parentNode.remove();
             });
     
-            wrapperDiv.appendChild(image);
+            wrapperDiv.appendChild(fileDisplayElement);
             wrapperDiv.appendChild(removeBtn);
             photoViewerDiv.appendChild(wrapperDiv);
     

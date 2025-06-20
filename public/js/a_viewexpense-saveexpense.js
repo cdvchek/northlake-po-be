@@ -250,12 +250,37 @@ const se_saveExpense = async () => {
 
         // Add Images
         const imgElements = document.getElementsByClassName('photo');
+        console.log(imgElements);
+
         await se_addImagesToPDF(imgElements, pdf, pdfWidth, pdfHeight);
 
-        // Save the PDF
+        const summaryWithImagesBytes = pdf.output('arraybuffer');
+        const mergedPdf = await PDFLib.PDFDocument.load(summaryWithImagesBytes);
+
+        const pdfElements = document.getElementsByClassName('pdf');
+        console.log(pdfElements);
+
+        for (const pdfButton of pdfElements) {
+            const pdfUrl = pdfButton.getAttribute('data-url');
+            const existingPdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer());
+    
+            const existingPdf = await PDFLib.PDFDocument.load(existingPdfBytes);
+            const copiedPages = await mergedPdf.copyPages(existingPdf, existingPdf.getPageIndices());
+            copiedPages.forEach((page) => mergedPdf.addPage(page));
+        }
+        
         const formattedDate = `${data.date.slice(6, 10)}.${data.date.slice(0, 2)}.${data.date.slice(3, 5)}`;
         const fileName = `${formattedDate}-${data.name.replace(/\s/g, '_')}-${data.vendor.replace(/\s/g, '_')}-$${data.amount}.pdf`;
-        pdf.save(fileName);
+
+        const finalPdfBytes = await mergedPdf.save();
+        const blob = new Blob([finalPdfBytes], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+
+        // // Save the PDF
+        // pdf.save(fileName);
 
         console.log("PDF successfully generated and saved!");
     } catch (error) {

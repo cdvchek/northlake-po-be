@@ -76,8 +76,21 @@ router.post('/newexpense', tokenAuth, upload.array('image'), async (req, res) =>
             let imageNames = []; // Array to store names of uploaded images
 
             for (const file of req.files) {
-                const imageName = randomImageName(); // Generate a unique name for each image
-                const buffer = await sharp(file.buffer).resize({ height: 1920, width: 1080, fit: 'outside' }).withMetadata().toBuffer();
+                const originalName = file.originalname.replaceAll(' ', '_'); // sanitize filename
+                const extension = originalName.split('.').pop(); // or use mime check if needed
+                const hash = randomImageName();
+                const imageName = `${hash}^^${originalName}^^.${extension}`;
+
+                let buffer;
+
+                if (file.mimetype === 'application/pdf') {
+                    buffer = file.buffer; // don't process PDFs with sharp
+                } else {
+                    buffer = await sharp(file.buffer)
+                        .resize({ height: 1920, width: 1080, fit: 'outside' })
+                        .withMetadata()
+                        .toBuffer();
+                }
 
                 const params = {
                     Bucket: bucketName,
@@ -206,7 +219,7 @@ router.get('/images-:expenseId', tokenAuth, async (req, res) => {
             }
             
             const command = new GetObjectCommand(params);
-            const url = await getSignedUrl(s3, command, { expriesIn: 10 });
+            const url = await getSignedUrl(s3, command, { expiresIn: 99 });
             images.push({id: image.id, url: url});
         }
             
@@ -294,8 +307,21 @@ router.put('/image/:id', tokenAuth, upload.array('image'), async (req, res) => {
 
         for (let i = 0; i < req.files.length; i++) {
             const file = req.files[i];
-            const imageName = randomImageName(); // Generate a unique name for each image
-            const buffer = await sharp(file.buffer).resize({ height: 1920, width: 1080, fit: 'outside' }).withMetadata().toBuffer();
+            const originalName = file.originalname.replaceAll(' ', '_'); // sanitize filename
+            const extension = originalName.split('.').pop(); // or use mime check if needed
+            const hash = randomImageName();
+            const imageName = `${hash}^^${originalName}^^.${extension}`;
+
+            let buffer;
+
+            if (file.mimetype === 'application/pdf') {
+                buffer = file.buffer; // don't process PDFs with sharp
+            } else {
+                buffer = await sharp(file.buffer)
+                    .resize({ height: 1920, width: 1080, fit: 'outside' })
+                    .withMetadata()
+                    .toBuffer();
+            }
 
             const params = {
                 Bucket: bucketName,
