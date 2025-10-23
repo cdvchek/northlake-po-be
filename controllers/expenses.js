@@ -151,10 +151,15 @@ router.get('/allexpenses', tokenAuth, async (req, res) => {
         const mappedExpenses = await Promise.all(
             expenses.map(async (expense) => {
             
-                const dateRaw = expense.date_expense.toISOString();
-                const dateSubString = dateRaw.substring(0, 10);
-                const dateArr = dateSubString.split('-');
-                const dateFormatted = `${dateArr[1]}/${dateArr[2]}/${dateArr[0]}`;
+                let dateFormatted = '12/25/1999';
+                try {
+                    const dateObj = new Date(expense.date_expense);
+                    if (!isNaN(dateObj)) {
+                        const dateRaw = dateObj.toISOString().substring(0, 10);
+                        const [year, month, day] = dateRaw.split('-');
+                        dateFormatted = `${month}/${day}/${year}`;
+                    }
+                } catch {}
                 
                 let user = await User.findByPk(expense.UserId);
                 
