@@ -1,296 +1,356 @@
-const se_saveBtn = document.getElementById('save-btn');
+const saveBtn = document.getElementById("save-btn");
 const { jsPDF } = window.jspdf;
 
-// Load an image from a URL
-const se_loadImage = (url) => {
-    return new Promise((resolve, reject) => {
-        console.log();
-        
-        const image = new Image();
-        image.crossOrigin = 'Anonymous';
-        image.src = url;
-        image.onload = () => resolve(image);
-        image.onerror = (error) => {
-            console.log(error);
-            reject(new Error(`Failed to load image at ${url}: ${error}`));
-        }
-    });
+const PDF_SIZE = {
+  width: 210,
+  height: 297,
 };
 
-// Convert an image to a Blob (JPEG format)
-const se_convertImageToJPEG = (imgElement) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = imgElement.naturalWidth;
-    canvas.height = imgElement.naturalHeight;
-    ctx.drawImage(imgElement, 0, 0, imgElement.naturalWidth, imgElement.naturalHeight);
-
-    return new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.275);
-    });
+const LAYOUT = {
+  left: 30,
+  right: 180,
+  blue: [0, 155, 219],
+  darkBlue: [0, 80, 180],
+  gray: [130, 130, 130],
+  lightGray: [220, 220, 220],
 };
 
-// Add images to the PDF
-const se_addImagesToPDF = async (imgElements, pdf, pdfWidth, pdfHeight) => {
-    for (const imgElement of imgElements) {
-        const blob = await se_convertImageToJPEG(imgElement);
-        const blobUrl = URL.createObjectURL(blob);
-        pdf.addPage();
-        pdf.addImage(blobUrl, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-        URL.revokeObjectURL(blobUrl);
+const PAYMENT_TYPES = {
+  CREDIT_CARD: "Church Credit Card",
+  REIMBURSEMENT: "Reimbursement",
+  INVOICE: "Invoice",
+};
+
+function formatDateForDisplay(dateString) {
+  const [year, month, day] = dateString.split("T")[0].split("-");
+  return `${month}/${day}/${year}`;
+}
+
+function formatDateForFileName(displayDate) {
+  const [month, day, year] = displayDate.split("/");
+  return `${year}.${month}.${day}`;
+}
+
+function safeFileText(value) {
+  return String(value ?? "")
+    .trim()
+    .replace(/\s+/g, "_")
+    .replace(/[^\w.-]/g, "");
+}
+
+function centerTextInBox(pdf, text, x, y, width) {
+  const textWidth = pdf.getTextWidth(text);
+  pdf.text(text, x + width / 2 - textWidth / 2, y);
+}
+
+function drawHeader(pdf, data) {
+  const employeeName = `${data.User.first_name} ${data.User.last_name}`;
+
+  pdf.setFillColor(...LAYOUT.blue);
+  pdf.rect(30, 30, PDF_SIZE.width - 60, 7, "F");
+
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFontSize(12);
+  pdf.text(employeeName, 32, 35);
+
+  pdf.setTextColor(...LAYOUT.gray);
+  pdf.setFontSize(20);
+  pdf.setFont(undefined, "bold");
+  pdf.text("Expense Entry", 32, 45);
+
+  pdf.setTextColor(10, 10, 10);
+  pdf.setFont(undefined, "normal");
+  pdf.setFontSize(13);
+  pdf.text("#", 145, 44);
+
+  const idText = String(data.id);
+  pdf.text(idText, 178 - pdf.getTextWidth(idText), 44);
+
+  pdf.setLineWidth(0.4);
+  pdf.line(30, 48, 180, 48);
+
+  return employeeName;
+}
+
+function drawPurchaseDate(pdf, data) {
+  const displayDate = formatDateForDisplay(data.date_expense);
+
+  pdf.setFontSize(11);
+  pdf.setFont(undefined, "bold");
+  pdf.setTextColor(0, 0, 0);
+
+  pdf.text("Purchase Date", 122, 55.8);
+
+  // white box with black border
+  pdf.rect(151, 49.8, 29, 9.2);
+
+  // black text
+  pdf.setFontSize(12);
+  pdf.setFont(undefined, "normal");
+  pdf.text(String(displayDate), 153.3, 56.2);
+
+  return displayDate;
+}
+
+function drawVendor(pdf, data) {
+  pdf.setFontSize(11);
+  pdf.setFont(undefined, "bold");
+  pdf.text("Vendor/Payee Name", 38, 68);
+
+  pdf.rect(77, 61, 103, 12);
+
+  pdf.setFontSize(14);
+  pdf.setFont(undefined, "normal");
+  centerTextInBox(pdf, data.vendor, 77, 68.5, 103);
+}
+
+function shouldShowAddress(data) {
+  return data.expense_type === PAYMENT_TYPES.REIMBURSEMENT;
+}
+
+function drawAddress(pdf, data) {
+  if (!shouldShowAddress(data)) return 0;
+
+  pdf.setFontSize(11);
+  pdf.setFont(undefined, "bold");
+  pdf.text("Address", 38, 83);
+
+  pdf.rect(77, 76, 103, 12);
+
+  pdf.setFontSize(12);
+  pdf.setFont(undefined, "normal");
+  centerTextInBox(pdf, data.address ?? "", 77, 83.5, 103);
+
+  return 15; // amount to push everything below down
+}
+
+function drawX(pdf, x, y) {
+  pdf.line(x, y, x + 4, y + 4);
+  pdf.line(x, y + 4, x + 4, y);
+}
+
+function drawPaymentType(pdf, data, yOffset = 0) {
+  pdf.setFontSize(11);
+  pdf.setFont(undefined, "bold");
+  pdf.text("Payment Type", 43, 93.5 + yOffset);
+
+  pdf.rect(77, 77 + yOffset, 10, 30);
+  pdf.line(77, 87 + yOffset, 87, 87 + yOffset);
+  pdf.line(77, 97 + yOffset, 87, 97 + yOffset);
+
+  pdf.setFontSize(10);
+  pdf.setFont(undefined, "normal");
+
+  pdf.text("Church Credit Card", 90, 83.5 + yOffset);
+  pdf.text("Write Check to Payee named above", 90, 93.5 + yOffset);
+  pdf.text("Write Check to Vendor named above", 90, 103.5 + yOffset);
+
+  const cardLabelWidth = pdf.getTextWidth("Church Credit Card");
+  const holderBoxX = 93 + cardLabelWidth;
+  const holderBoxWidth = 180 - holderBoxX;
+
+  pdf.rect(holderBoxX, 77 + yOffset, holderBoxWidth, 10);
+
+  if (data.expense_type === PAYMENT_TYPES.CREDIT_CARD) {
+    drawX(pdf, 80, 80 + yOffset);
+
+    pdf.setFontSize(12);
+    centerTextInBox(
+      pdf,
+      data.credit_card_holder ?? "",
+      holderBoxX,
+      83.7 + yOffset,
+      holderBoxWidth
+    );
+  } else if (data.expense_type === PAYMENT_TYPES.REIMBURSEMENT) {
+    drawX(pdf, 80, 90 + yOffset);
+  } else {
+    drawX(pdf, 80, 100 + yOffset);
+  }
+}
+
+function splitTextToWidth(pdf, text, width) {
+  return pdf.splitTextToSize(String(text ?? ""), width);
+}
+
+function drawExpenseTable(pdf, expenseDefiners, yOffset = 0) {
+  const startY = 110 + yOffset;
+  const rowHeight = 6;
+  const descWidth = 106;
+
+  pdf.line(30, startY, 180, startY);
+  pdf.line(30, startY + 6, 180, startY + 6);
+
+  pdf.setFontSize(10);
+  pdf.text("Total Price", 160, 114 + yOffset);
+
+  pdf.setTextColor(...LAYOUT.darkBlue);
+  pdf.text("Line #", 35, 114 + yOffset);
+
+  pdf.setFont(undefined, "bold");
+  pdf.text("Description", 52, 114 + yOffset);
+
+  pdf.setFont(undefined, "normal");
+  pdf.setTextColor(0, 0, 0);
+
+  let currentY = 120 + yOffset;
+
+  expenseDefiners.forEach((definer, index) => {
+    const descriptionLines = splitTextToWidth(
+      pdf,
+      definer.business_purpose,
+      descWidth
+    );
+
+    const rowBlockHeight = descriptionLines.length * rowHeight;
+
+    if (index % 2 === 1) {
+      pdf.setFillColor(...LAYOUT.lightGray);
+      pdf.rect(30, currentY - 4, 150, rowBlockHeight, "F");
     }
-};
 
+    pdf.text(String(definer.ExpenseNumber.number), 35, currentY);
 
-// Generate and save the PDF
-const se_saveExpense = async () => {
-    try {
-        const data = global_expenseData.data;
+    descriptionLines.forEach((line, lineIndex) => {
+      pdf.text(line, 52, currentY + lineIndex * rowHeight);
+    });
 
-        // Define maximum dimensions for the image on the PDF
-        const pdfWidth = 210;
-        const pdfHeight = 297;
+    pdf.text(`$${definer.amount}`, 160, currentY);
 
-        // Create PDF and add the image
-        const pdf = new jsPDF();
+    currentY += rowBlockHeight;
+  });
 
-        // Colored bar with employee name
-        pdf.setFillColor(0, 155, 219); // setting bar color
-        pdf.rect(30,30, pdfWidth - 60, 7,'F'); // drawing the bar
-        pdf.setTextColor(255, 255, 255); // setting text color to white
-        pdf.setFontSize(12); // smaller text
-        data.name = `${data.User.first_name} ${data.User.last_name}`;
-        pdf.text(data.name, 32, 35); // write the text in the bar
+  const bottomY = currentY - 4;
 
-        // Purchase Order under colored bar
-        pdf.setTextColor(130, 130, 130);
-        pdf.setFontSize(20);
-        pdf.setFont(undefined, "bold");
-        pdf.text("Expense Entry", 32, 45);
+  pdf.setLineDashPattern([1, 1], 0);
+  pdf.line(50, 116 + yOffset, 50, bottomY);
+  pdf.setLineDashPattern([], 0);
 
-        // PO# under the colored bar
-        pdf.setTextColor(10, 10, 10);
-        pdf.setFont(undefined, "normal");
-        pdf.setFontSize(13);
-        pdf.text("#", 145, 44);
-        const poNoSize = pdf.getTextWidth(`${data.id}`);
-        pdf.text(`${data.id}`, 178 - poNoSize, 44);
+  pdf.line(30, bottomY, 180, bottomY);
 
-        // Drawing the line under the Purchase Order title
-        pdf.setLineWidth(.4);
-        pdf.line(30, 48, 180, 48);
-        
-        // Drawing the purchase date text
-        pdf.setFontSize(11);
-        pdf.setFont(undefined, "bold");
-        pdf.text("Purchase Date", 122, 55.8);
+  return bottomY;
+}
 
-        // Box around purchase date
-        pdf.setFillColor(10, 10, 10);
-        pdf.rect(151, 49.8, 180 - 151, 9.2);
+function drawTotal(pdf, data, bottomY) {
+  pdf.line(140, bottomY + 10, 180, bottomY + 10);
 
-        // Draw purchase date
-        pdf.setFontSize(12);
-        pdf.setFont(undefined, "normal");
-        const dateArr = data.date_expense.split('T')[0].split('-');
-        data.date = `${dateArr[1]}/${dateArr[2]}/${dateArr[0]}`;
-        pdf.text(data.date, 153.3, 55.8);
+  pdf.setFontSize(18);
+  pdf.setTextColor(0, 0, 0);
+  pdf.text(`$${data.amount}`, 145, bottomY + 8);
 
-        // Vendor/Payee Name text
-        pdf.setFontSize(11);
-        pdf.setFont(undefined, "bold");
-        pdf.text("Vendor/Payee Name", 38, 68);
+  pdf.setTextColor(...LAYOUT.darkBlue);
+  pdf.text("Purchase Total", 96, bottomY + 8);
 
-        // Vendor/Payee box
-        pdf.rect(77, 61, 180 - 77, 12);
+  pdf.setTextColor(0, 0, 0);
+}
 
-        // Vendor/Payee
-        pdf.setFontSize(14);
-        pdf.setFont(undefined, "normal");
-        const vendorSize = pdf.getTextWidth(data.vendor);
-        pdf.text(data.vendor, ((180 - 77) / 2) - (vendorSize / 2) + 77, 68.5);
+async function imageElementToJpegBlob(imgElement) {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
-        // Payment Type text
-        pdf.setFontSize(11);
-        pdf.setFont(undefined, "bold");
-        pdf.text("Payment Type", 43, 93.5);
+  canvas.width = imgElement.naturalWidth;
+  canvas.height = imgElement.naturalHeight;
 
-        // payment type boxes
-        pdf.rect(77, 77, 10, 30);
-        pdf.line(77, 87, 87, 87);
-        pdf.line(77, 97, 87, 97);
+  ctx.drawImage(imgElement, 0, 0);
 
-        // church credit card
-        pdf.setFontSize(10);
-        pdf.setFont(undefined, "normal");
-        pdf.text("Church Credit Card", 90, 83.5);
+  return new Promise((resolve) => {
+    canvas.toBlob(resolve, "image/jpeg", 0.275);
+  });
+}
 
-        // credit card holder box
-        const cccSize = pdf.getTextWidth("Church Credit Card");
-        pdf.rect(93 + cccSize, 77, 180 - (93 + cccSize), 10);
+async function addImagesToPdf(pdf, imgElements) {
+  for (const imgElement of imgElements) {
+    const blob = await imageElementToJpegBlob(imgElement);
+    const blobUrl = URL.createObjectURL(blob);
 
-        // personal reimbursement and invoice
-        pdf.text("Write Check to Payee named above", 90, 93.5);
-        pdf.text("Write Check to Vendor named above", 90, 103.5);
+    pdf.addPage();
+    pdf.addImage(blobUrl, "JPEG", 0, 0, PDF_SIZE.width, PDF_SIZE.height);
 
-        if (data.expense_type === "Church Credit Card") { 
-            // credit card holder
-            const boxstart = 93 + cccSize;
-            const boxend = 180;
-            const middle = 180 - ((boxend - boxstart) / 2);
-            const nameOffset = pdf.getTextWidth(data.credit_card_holder);
-            const namestart = middle - (nameOffset / 2);
-            pdf.setFontSize(12);
-            pdf.text(data.credit_card_holder, namestart, 83.7);
+    URL.revokeObjectURL(blobUrl);
+  }
+}
 
-            // X in church credit card box
-            pdf.line(80, 80, 84, 84);
-            pdf.line(80, 84, 84, 80);
-        } else if (data.expense_type === "Reimbursement") {
-            // x in personal reimbursement box
-            pdf.line(80, 90, 84, 94);
-            pdf.line(80, 94, 84, 90);
-        } else {
-            // x in invoice box
-            pdf.line(80, 100, 84, 104);
-            pdf.line(80, 104, 84, 100);
-        }
+async function mergeAttachedPdfs(basePdfBytes, pdfButtons) {
+  const mergedPdf = await PDFLib.PDFDocument.load(basePdfBytes);
 
-        // Lines for line number table
-        pdf.line(30, 110, 180, 110); // top line
-        pdf.line(30, 116, 180, 116); // line under description
+  for (const pdfButton of pdfButtons) {
+    const pdfUrl = pdfButton.getAttribute("data-url");
+    if (!pdfUrl) continue;
 
-        // Description, Line #, & Total Price text on table
-        pdf.setFontSize(10);
-        pdf.text("Total Price", 160, 114);
-        pdf.setTextColor(0, 80, 180);
-        pdf.text("Line #", 35, 114);
-        pdf.setFontSize(10);
-        pdf.setFont(undefined, "bold");
-        pdf.text("Description", 52, 114);
+    const existingPdfBytes = await fetch(pdfUrl).then((res) =>
+      res.arrayBuffer()
+    );
 
-        // Reset font
-        pdf.setFont(undefined, "normal");
-        pdf.setTextColor(0, 0, 0);
+    const existingPdf = await PDFLib.PDFDocument.load(existingPdfBytes);
+    const copiedPages = await mergedPdf.copyPages(
+      existingPdf,
+      existingPdf.getPageIndices()
+    );
 
-        // Keep track of offset
-        let totalOffset = 0;
-        // Loop through each expense definer
-        for (let i = 0; i < data.ExpenseDefiners.length; i++) {
-            // Grab business purpose and width and set up array
-            const businessPurpose = data.ExpenseDefiners[i].business_purpose;
-            const bpWidth = pdf.getTextWidth(businessPurpose);
-            const bpArray = [];
+    copiedPages.forEach((page) => mergedPdf.addPage(page));
+  }
 
-            // Figure out the number of lines in the description/business purpose
-            const numberOfLines = Math.ceil(bpWidth / 106);
-            const cutOffs = [-1];
+  return mergedPdf.save();
+}
 
-            // For each line
-            for (let j = 1; j <= numberOfLines; j++) {
-                // Approximate the cutoff
-                let cutOff = Math.floor((106 / bpWidth) * businessPurpose.length) * j;
-                let lastRow = false;
+function downloadPdf(pdfBytes, fileName) {
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
 
-                // Figure out if we are the last row or not
-                if (cutOff > businessPurpose.length) {
-                    cutOff = businessPurpose.length;
-                    lastRow = true;
-                }
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
 
-                // If not the last row, find the most recent space
-                while ((businessPurpose[cutOff] !== ' ' || pdf.getTextWidth(businessPurpose.slice(cutOffs[j - 1] + 1, cutOff)) > 106) && !lastRow) {
-                    cutOff--;
-                }
+  URL.revokeObjectURL(url);
+}
 
-                // Add this line to the array of business purpose lines
-                cutOffs[j] = cutOff;
-                bpArray[j - 1] = businessPurpose.slice(cutOffs[j - 1] + 1, cutOffs[j]);
-            }
+function buildFileName(data, employeeName, displayDate) {
+  const formattedDate = formatDateForFileName(displayDate);
 
-            // Every other expense definer should be grey/white
-            if (i % 2) {
-                pdf.setTextColor(220, 220, 220);
-                pdf.setFillColor(220, 220, 220);
-                pdf.rect(30, 116 + ((i + totalOffset) * 6), 150, 6 * numberOfLines, 'F');
-                pdf.setTextColor(0, 0, 0);
-            }
-        
-            // Expense number display
-            pdf.text(data.ExpenseDefiners[i].ExpenseNumber.number, 35, 120 + ((i + totalOffset) * 6)); // Line #
+  return `${formattedDate}-${safeFileText(employeeName)}-${safeFileText(
+    data.vendor
+  )}-$${data.amount}.pdf`;
+}
 
-            // Expense business purpose/description display
-            for (let j = 0; j < bpArray.length; j++) {
-                const row = bpArray[j];
-                pdf.text(row, 52, 120 + ((i + totalOffset + j) * 6));
-            }
+async function saveExpensePdf() {
+  try {
+    const data = global_expenseData.data;
 
-            // Expense definer amount display
-            pdf.text(`$${data.ExpenseDefiners[i].amount}`, 160, 120 + ((i + totalOffset) * 6));
-            
-            // Add to the total offset
-            totalOffset += (numberOfLines - 1);
-        }
+    const pdf = new jsPDF();
 
-        // Verticle dashed line
-        const bottomY = 116 + (6 * (data.ExpenseDefiners.length + totalOffset));
-        pdf.setLineDashPattern([1, 1], 0);
-        pdf.line(50, 116, 50, bottomY); // verticle line in the table
-        pdf.setLineDashPattern([], 0);
-        pdf.line(30, bottomY, 180, bottomY); // bottom line
+    const employeeName = drawHeader(pdf, data);
+    const displayDate = drawPurchaseDate(pdf, data);
 
-        // Purchase total Lines and actual dollar amount
-        pdf.line(140, bottomY + 10, 180, bottomY + 10);
-        pdf.setFontSize(18);
-        pdf.text(`$${data.amount}`, 145, bottomY + 8);
-        
-        // Purchase total
-        pdf.setTextColor(0, 80, 180);
-        pdf.text("Purchase Total", 96, bottomY + 8);
+    drawVendor(pdf, data);
 
-        // Add Images
-        const imgElements = document.getElementsByClassName('photo');
-        console.log(imgElements);
+    const addressOffset = drawAddress(pdf, data);
 
-        await se_addImagesToPDF(imgElements, pdf, pdfWidth, pdfHeight);
+    drawPaymentType(pdf, data, addressOffset);
 
-        const summaryWithImagesBytes = pdf.output('arraybuffer');
-        const mergedPdf = await PDFLib.PDFDocument.load(summaryWithImagesBytes);
+    const bottomY = drawExpenseTable(
+        pdf,
+        data.ExpenseDefiners,
+        addressOffset
+    );
 
-        const pdfElements = document.getElementsByClassName('pdf');
-        console.log(pdfElements);
+    drawTotal(pdf, data, bottomY);
 
-        for (const pdfButton of pdfElements) {
-            const pdfUrl = pdfButton.getAttribute('data-url');
-            const existingPdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer());
-    
-            const existingPdf = await PDFLib.PDFDocument.load(existingPdfBytes);
-            const copiedPages = await mergedPdf.copyPages(existingPdf, existingPdf.getPageIndices());
-            copiedPages.forEach((page) => mergedPdf.addPage(page));
-        }
-        
-        const formattedDate = `${data.date.slice(6, 10)}.${data.date.slice(0, 2)}.${data.date.slice(3, 5)}`;
-        const fileName = `${formattedDate}-${data.name.replace(/\s/g, '_')}-${data.vendor.replace(/\s/g, '_')}-$${data.amount}.pdf`;
+    const imgElements = document.getElementsByClassName("photo");
+    await addImagesToPdf(pdf, imgElements);
 
-        const finalPdfBytes = await mergedPdf.save();
-        const blob = new Blob([finalPdfBytes], { type: 'application/pdf' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName;
-        link.click();
+    const summaryPdfBytes = pdf.output("arraybuffer");
 
-        // // Save the PDF
-        // pdf.save(fileName);
+    const pdfElements = document.getElementsByClassName("pdf");
+    const finalPdfBytes = await mergeAttachedPdfs(summaryPdfBytes, pdfElements);
 
-        console.log("PDF successfully generated and saved!");
-    } catch (error) {
-        console.log(error);
-        console.error("Error generating PDF:", error);
-    }
-};
+    const fileName = buildFileName(data, employeeName, displayDate);
+    downloadPdf(finalPdfBytes, fileName);
 
-// Attach click event listener to the save button
-se_saveBtn.addEventListener('click', async () => {
-    console.log("Save button clicked");
-    await se_saveExpense();
-});
+    console.log("PDF successfully generated and saved!");
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+  }
+}
+
+saveBtn.addEventListener("click", saveExpensePdf);
